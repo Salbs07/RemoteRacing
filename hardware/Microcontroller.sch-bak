@@ -1,0 +1,196 @@
+EESchema Schematic File Version 4
+EELAYER 30 0
+EELAYER END
+$Descr A4 11693 8268
+encoding utf-8
+Sheet 2 8
+Title ""
+Date ""
+Rev ""
+Comp ""
+Comment1 ""
+Comment2 ""
+Comment3 ""
+Comment4 ""
+$EndDescr
+$Comp
+L MCU_ST_STM32F0:STM32F030R8Tx U?
+U 1 1 5F8FBD6E
+P 5850 3800
+F 0 "U?" H 6250 2050 50  0000 C CNN
+F 1 "STM32F030R8Tx" H 5850 3800 50  0000 C CNN
+F 2 "Package_QFP:LQFP-64_10x10mm_P0.5mm" H 5350 2100 50  0001 R CNN
+F 3 "http://www.st.com/st-web-ui/static/active/en/resource/technical/document/datasheet/DM00088500.pdf" H 5850 3800 50  0001 C CNN
+	1    5850 3800
+	1    0    0    -1  
+$EndComp
+$Comp
+L Device:C C?
+U 1 1 5F908C14
+P 3550 3300
+F 0 "C?" H 3665 3346 50  0000 L CNN
+F 1 "100nF" H 3665 3255 50  0000 L CNN
+F 2 "" H 3588 3150 50  0001 C CNN
+F 3 "~" H 3550 3300 50  0001 C CNN
+	1    3550 3300
+	1    0    0    -1  
+$EndComp
+$Comp
+L Device:C C?
+U 1 1 5F908F9A
+P 4050 3300
+F 0 "C?" H 4165 3346 50  0000 L CNN
+F 1 "4.7uF" H 4165 3255 50  0000 L CNN
+F 2 "" H 4088 3150 50  0001 C CNN
+F 3 "~" H 4050 3300 50  0001 C CNN
+	1    4050 3300
+	1    0    0    -1  
+$EndComp
+$Comp
+L Device:C C?
+U 1 1 5F902F9D
+P 3050 3300
+F 0 "C?" H 3165 3346 50  0000 L CNN
+F 1 "100nF" H 3165 3255 50  0000 L CNN
+F 2 "" H 3088 3150 50  0001 C CNN
+F 3 "~" H 3050 3300 50  0001 C CNN
+	1    3050 3300
+	1    0    0    -1  
+$EndComp
+Wire Wire Line
+	3050 3150 3550 3150
+Wire Wire Line
+	4050 3150 3550 3150
+Connection ~ 3550 3150
+Wire Wire Line
+	3050 3450 3550 3450
+Wire Wire Line
+	4050 3450 3550 3450
+Connection ~ 3550 3450
+$Comp
+L power:GND #PWR?
+U 1 1 5F90BE03
+P 3550 3450
+F 0 "#PWR?" H 3550 3200 50  0001 C CNN
+F 1 "GND" H 3555 3277 50  0000 C CNN
+F 2 "" H 3550 3450 50  0001 C CNN
+F 3 "" H 3550 3450 50  0001 C CNN
+	1    3550 3450
+	1    0    0    -1  
+$EndComp
+$Comp
+L power:+3.3V #PWR?
+U 1 1 5F90CDB7
+P 3550 3150
+F 0 "#PWR?" H 3550 3000 50  0001 C CNN
+F 1 "+3.3V" H 3565 3323 50  0000 C CNN
+F 2 "" H 3550 3150 50  0001 C CNN
+F 3 "" H 3550 3150 50  0001 C CNN
+	1    3550 3150
+	1    0    0    -1  
+$EndComp
+Text Notes 2750 2900 0    50   ~ 0
+Place Capacitors between VDD and VSS pins
+$Comp
+L Device:C C?
+U 1 1 5F914531
+P 3250 4450
+F 0 "C?" H 3365 4496 50  0000 L CNN
+F 1 "10nF" H 3365 4405 50  0000 L CNN
+F 2 "" H 3288 4300 50  0001 C CNN
+F 3 "~" H 3250 4450 50  0001 C CNN
+	1    3250 4450
+	1    0    0    -1  
+$EndComp
+$Comp
+L Device:C C?
+U 1 1 5F91529D
+P 3800 4450
+F 0 "C?" H 3915 4496 50  0000 L CNN
+F 1 "1uF" H 3915 4405 50  0000 L CNN
+F 2 "" H 3838 4300 50  0001 C CNN
+F 3 "~" H 3800 4450 50  0001 C CNN
+	1    3800 4450
+	1    0    0    -1  
+$EndComp
+Wire Wire Line
+	3250 4300 3550 4300
+Wire Wire Line
+	3250 4600 3550 4600
+$Comp
+L power:+3.3V #PWR?
+U 1 1 5F9183FA
+P 3550 4300
+F 0 "#PWR?" H 3550 4150 50  0001 C CNN
+F 1 "+3.3V" H 3565 4473 50  0000 C CNN
+F 2 "" H 3550 4300 50  0001 C CNN
+F 3 "" H 3550 4300 50  0001 C CNN
+	1    3550 4300
+	1    0    0    -1  
+$EndComp
+Connection ~ 3550 4300
+Wire Wire Line
+	3550 4300 3800 4300
+$Comp
+L power:GND #PWR?
+U 1 1 5F918B19
+P 3550 4600
+F 0 "#PWR?" H 3550 4350 50  0001 C CNN
+F 1 "GND" H 3555 4427 50  0000 C CNN
+F 2 "" H 3550 4600 50  0001 C CNN
+F 3 "" H 3550 4600 50  0001 C CNN
+	1    3550 4600
+	1    0    0    -1  
+$EndComp
+Connection ~ 3550 4600
+Wire Wire Line
+	3550 4600 3800 4600
+Text Notes 2700 4050 0    50   ~ 0
+Place Capacitors between VDDA and VSSA pins
+$Comp
+L power:+3.3V #PWR?
+U 1 1 5F91E2D5
+P 5900 1950
+F 0 "#PWR?" H 5900 1800 50  0001 C CNN
+F 1 "+3.3V" H 5915 2123 50  0000 C CNN
+F 2 "" H 5900 1950 50  0001 C CNN
+F 3 "" H 5900 1950 50  0001 C CNN
+	1    5900 1950
+	1    0    0    -1  
+$EndComp
+Wire Wire Line
+	5750 2000 5850 2000
+Wire Wire Line
+	5950 2000 6050 2000
+Connection ~ 5950 2000
+Connection ~ 5850 2000
+Wire Wire Line
+	5950 5600 5850 5600
+Wire Wire Line
+	5750 5600 5850 5600
+Connection ~ 5850 5600
+$Comp
+L power:GND #PWR?
+U 1 1 5F91FE4D
+P 5850 5650
+F 0 "#PWR?" H 5850 5400 50  0001 C CNN
+F 1 "GND" H 5855 5477 50  0000 C CNN
+F 2 "" H 5850 5650 50  0001 C CNN
+F 3 "" H 5850 5650 50  0001 C CNN
+	1    5850 5650
+	1    0    0    -1  
+$EndComp
+Wire Wire Line
+	5850 5600 5850 5650
+Wire Wire Line
+	5850 2000 5900 2000
+Wire Wire Line
+	5900 1950 5900 2000
+Connection ~ 5900 2000
+Wire Wire Line
+	5900 2000 5950 2000
+Text GLabel 6450 4600 2    50   Input ~ 0
+accel_SDA
+Text GLabel 6450 4700 2    50   Input ~ 0
+accel_SCL
+$EndSCHEMATC
