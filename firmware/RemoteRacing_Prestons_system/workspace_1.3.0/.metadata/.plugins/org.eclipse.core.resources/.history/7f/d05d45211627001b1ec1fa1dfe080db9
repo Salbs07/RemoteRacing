@@ -1,0 +1,91 @@
+/*
+ * GPS.c
+ *
+ *  Created on: Nov 11, 2020
+ *      Author: pjfossee
+ *
+ *    /-----------OVERRUN RESET FOR REFERENCE-----------------//
+//	  if (__HAL_UART_GET_FLAG(&huart1, UART_FLAG_ORE) != RESET) {
+//		  __HAL_UART_CLEAR_IT(&huart1, UART_CLEAR_OREF);
+//		}
+ */
+
+#include "GPS.h"
+
+#define MAX_PACKET_LENGTH 255
+#define GPS_GPRMC_ONLY "$PMTK314,0,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0*29\r\n"
+#define GPS_GPRMC_ONLY_SIZE 51
+#define GPS_10HZ "$PMTK220,100*2F\r\n"
+#define GPS_10HZ_SIZE 17
+#define GPS_BAUD_57600 "$PMTK251,57600*2C\r\n"
+#define GPS_BAUD_57600_SIZE 19
+#define GPS_UART_TIMEOUT 2000 //milliseconds
+#define RX_BUFFER_SIZE 256
+#define RX_BUFFER_HALF_SIZE RX_BUFFER_SIZE/2
+
+UART_HandleTypeDef * GPS_UART = &huart1; // huart1 externed in header - redefine if changing uarts
+#ifdef DEBUG_SINCE_NO_BLE
+UART_HandleTypeDef * DEBUG_UART = &huart2; // huart2 externed in header - redefine if changing uarts - for debugging statements
+#endif
+uint8_t rxBuffer[RX_BUFFER_SIZE]; // incoming data buffer to be filled by DMA
+
+/*
+ * Initialize the GPS module to a higher baud rate (9600 -> 57600), to only output GPRMC data, and to output at 10Hz rate
+ */
+uint8_t gps_init() {
+	HAL_Delay(100);
+	uint8_t command_baud_57600[GPS_BAUD_57600_SIZE] = GPS_BAUD_57600;
+	uint8_t command_gprmc[GPS_GPRMC_ONLY_SIZE] = GPS_GPRMC_ONLY;
+	uint8_t command_10hz[GPS_10HZ_SIZE] = GPS_10HZ;
+//	// uint8_t response[MAX_PACKET_LENGTH];
+//
+	HAL_StatusTypeDef result = HAL_UART_Transmit(GPS_UART, command_baud_57600, GPS_BAUD_57600_SIZE, GPS_UART_TIMEOUT);
+	if (result != HAL_OK) {
+		return 0;
+	}
+
+	GPS_UART->Init.BaudRate = 57600;
+	if (HAL_UART_Init(GPS_UART) != HAL_OK) {
+		return 0;
+	}
+//
+	HAL_Delay(100);
+
+	result = HAL_UART_Transmit(&huart1, command_gprmc, GPS_GPRMC_ONLY_SIZE, GPS_UART_TIMEOUT);
+	if (result != HAL_OK) {
+		return 0;
+	}
+
+	HAL_Delay(100);
+
+	result = HAL_UART_Transmit(GPS_UART, command_10hz, GPS_10HZ_SIZE, GPS_UART_TIMEOUT);
+	if (result != HAL_OK) {
+		return 0;
+	}
+
+	HAL_Delay(100);
+
+	// Initialize DMA for GPS_UART
+	HAL_UART_MspInit(GPS_UART);
+
+	// Begin Receiving DMA for GPS_UART
+	HAL_UART_Receive_DMA(GPS_UART, rxBuffer, RX_BUFFER_SIZE);
+	return 1;
+}
+
+void gps_Recieve_Full() {
+	#ifdef DEBUG_SINCE_NO_BLE
+	// HAL_UART_Transmit(DEBUG_UART, rxBuffer + RX_BUFFER_HALF_SIZE, RX_BUFFER_HALF_SIZE, 100);
+	HAL_UART_Transmit_DMA(DEBUG_UART, rxBuffer + RX_BUFFER_HALF_SIZE, RX_BUFFER_HALF_SIZE);
+	#endif
+
+}
+
+void gps_Recieve_Half() {
+	#ifdef DEBUG_SINCE_NO_BLE
+	// HAL_UART_Transmit(DEBUG_UART, rxBuffer, RX_BUFFER_HALF_SIZE, 100);
+	HAL_UART_Transmit_DMA(DEBUG_UART, rxBuffer, RX_BUFFER_HALF_SIZE);
+	#endif
+}
+
+

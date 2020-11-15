@@ -1,0 +1,14 @@
+#ifndef RACING_DATA_H
+#define RACING_DATA_H
+
+typedef struct {
+
+} data_packet_tx;
+
+typedef enum {POSITIONS = 0x00, RACE_LENGTH = 0x01, RACE_START = 0x02, RACE_END = 0x03} command_t;
+
+typedef struct {
+	command_t command : 2;
+	uint8_t command_data : 120;
+} data_packet_rx;
+#endif

@@ -1,0 +1,36 @@
+#ifndef GPS_H_
+#define GPS_H_
+
+
+#include <string.h>
+#include "main.h"
+
+#define MAX_PACKET_LENGTH 255
+#define GPS_GPRMC_ONLY "$PMTK314,0,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0*29\r\n"
+#define GPS_GPRMC_ONLY_SIZE 51
+#define GPS_10HZ "$PMTK220,100*2F\r\n"
+#define GPS_10HZ_SIZE 17
+#define GPS_BAUD_57600 "$PMTK251,57600*2C\r\n"
+#define GPS_BAUD_57600_SIZE 19
+#define GPS_UART_TIMEOUT 2000 //milliseconds
+#define RX_BUFFER_SIZE 256
+#define RX_BUFFER_HALF_SIZE RX_BUFFER_SIZE/2
+#define TX_BUFFER_SIZE RX_BUFFER_SIZE/2
+
+UART_HandleTypeDef * GPS_UART = &huart1; // huart1 externed in header - redefine if changing uarts
+#ifdef DEBUG_SINCE_NO_BLE
+UART_HandleTypeDef * DEBUG_UART = &huart2; // huart2 externed in header - redefine if changing uarts - for debugging statements
+#endif
+uint8_t rxBuffer[RX_BUFFER_SIZE]; // incoming data buffer to be filled by DMA
+uint8_t txBuffer[TX_BUFFER_SIZE];
+uint8_t txReady = 0;
+
+extern UART_HandleTypeDef huart1;
+extern UART_HandleTypeDef huart2;
+
+uint8_t gps_init();
+void gps_log_data();
+void gps_Recieve_Full();
+void gps_Recieve_Half();
+
+#endif

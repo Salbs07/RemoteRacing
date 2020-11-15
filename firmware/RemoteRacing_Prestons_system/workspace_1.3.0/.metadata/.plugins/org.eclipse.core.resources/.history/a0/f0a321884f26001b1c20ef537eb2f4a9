@@ -1,0 +1,56 @@
+/*
+ * GPS.c
+ *
+ *  Created on: Nov 11, 2020
+ *      Author: pjfossee
+ */
+
+#include "GPS.h"
+
+#define MAX_PACKET_LENGTH 255
+#define GPS_GPRMC_ONLY "$PMTK314,0,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0*35\r\n"
+#define GPS_GPRMC_ONLY_SIZE 49
+#define GPS_10HZ "$PMTK220,100*2F\r\n"
+#define GPS_10HZ_SIZE 17
+#define GPS_BAUD_57600 "$PMTK251,57600*2C\r\n"
+#define GPS_BAUD_57600_SIZE 19
+#define GPS_UART_TIMEOUT 2000 //milliseconds
+
+UART_HandleTypeDef * GPS_UART = &huart1; // huart1 externed in header - redefine if changing uarts
+
+/*
+ * Initialize the GPS module to a higher baud rate (9600 -> 57600), to only output GPRMC data, and to output at 10Hz rate
+ */
+uint8_t gps_init() {
+	// uint8_t command_baud_57600[GPS_BAUD_57600_SIZE] = GPS_BAUD_57600;
+	uint8_t command_gprmc[GPS_GPRMC_ONLY_SIZE] = GPS_GPRMC_ONLY;
+	uint8_t command_10hz[GPS_10HZ_SIZE] = GPS_10HZ;
+	// uint8_t response[MAX_PACKET_LENGTH];
+
+//	HAL_StatusTypeDef result = HAL_UART_Transmit(GPS_UART, command_baud_57600, GPS_BAUD_57600_SIZE, GPS_UART_TIMEOUT);
+//	if (result != HAL_OK) {
+//		return 0;
+//	}
+
+//	GPS_UART->Init.BaudRate = 57600;
+//	if (HAL_UART_Init(GPS_UART) != HAL_OK) {
+//		return 0;
+//	}
+
+	HAL_StatusTypeDef result = HAL_UART_Transmit(GPS_UART, command_gprmc, GPS_GPRMC_ONLY_SIZE, GPS_UART_TIMEOUT);
+	if (result != HAL_OK) {
+		return 0;
+	}
+
+	result = HAL_UART_Transmit(GPS_UART, command_10hz, GPS_10HZ_SIZE, GPS_UART_TIMEOUT);
+	if (result != HAL_OK) {
+		return 0;
+	}
+
+	return 1;
+
+
+}
+
+
+

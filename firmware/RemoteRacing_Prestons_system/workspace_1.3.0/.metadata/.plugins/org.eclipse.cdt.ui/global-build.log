@@ -1,0 +1,17 @@
+16:58:41 **** Incremental Build of configuration Debug for project RemoteRacing ****
+make -j15 all 
+arm-none-eabi-gcc "../Core/Src/racing_tasks.c" -mcpu=cortex-m0 -std=gnu11 -g3 -DUSE_HAL_DRIVER -DSTM32F030x8 -DDEBUG -c -I../Drivers/Custom/inc -I../Drivers/STM32F0xx_HAL_Driver/Inc -I../Drivers/CMSIS/Include -I../Core/Inc -I../Drivers/STM32F0xx_HAL_Driver/Inc/Legacy -I../Drivers/CMSIS/Device/ST/STM32F0xx/Include -I../Core/FreeRTOS/Source/include -I../Core/FreeRTOS/Source/portable/GCC/ARM_CM0 -I../Core/FreeRTOS/Source/portable/MemMang -O0 -ffunction-sections -fdata-sections -Wall -fstack-usage -MMD -MP -MF"Core/Src/racing_tasks.d" -MT"Core/Src/racing_tasks.o" --specs=nano.specs -mfloat-abi=soft -mthumb -o "Core/Src/racing_tasks.o"
+arm-none-eabi-gcc -o "RemoteRacing.elf" @"objects.list"   -mcpu=cortex-m0 -T"/Users/pjfossee/STM32CubeIDE/workspace_1.3.0/RemoteRacing/STM32F030R8TX_FLASH.ld" --specs=nosys.specs -Wl,-Map="RemoteRacing.map" -Wl,--gc-sections -static -u _printf_float --specs=nano.specs -mfloat-abi=soft -mthumb -Wl,--start-group -lc -lm -Wl,--end-group
+Finished building target: RemoteRacing.elf
+ 
+arm-none-eabi-objdump -h -S  RemoteRacing.elf  > "RemoteRacing.list"
+arm-none-eabi-objcopy  -O binary  RemoteRacing.elf  "RemoteRacing.bin"
+arm-none-eabi-size   RemoteRacing.elf 
+   text	   data	    bss	    dec	    hex	filename
+  39712	    488	   6000	  46200	   b478	RemoteRacing.elf
+Finished building: default.size.stdout
+ 
+Finished building: RemoteRacing.bin
+ 
+Finished building: RemoteRacing.list
+ 

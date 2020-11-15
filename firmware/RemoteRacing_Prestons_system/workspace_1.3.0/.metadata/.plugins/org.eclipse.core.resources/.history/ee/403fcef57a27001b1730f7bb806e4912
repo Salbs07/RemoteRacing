@@ -1,0 +1,15 @@
+#include "racing_tasks.h"
+
+void RTOS_INIT() {
+	vTaskStartScheduler();
+}
+
+void RTOS_INIT_TASKS() {
+	xTaskCreate( vTaskCode, "NAME", STACK_SIZE, NULL, tskIDLE_PRIORITY, NULL);
+}
+
+void task_gps_packet_recieved() {
+	for(;;) {
+		gps_log_data();
+	}
+}

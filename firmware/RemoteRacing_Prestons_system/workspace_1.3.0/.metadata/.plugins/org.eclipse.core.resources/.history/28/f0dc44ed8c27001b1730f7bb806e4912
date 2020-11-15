@@ -1,0 +1,3 @@
+#include "BLE.h"
+
+UART_HandleTypeDef * BLE_UART = &huart2; // huart2 externed in header - redefine if changing uarts - for debugging statements

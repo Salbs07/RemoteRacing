@@ -1,0 +1,11 @@
+#ifndef RACING_TASKS_H_
+#define RACING_TASKS_H_
+
+#include "main.h"
+#include "cmsis_os.h"
+#include "MMA8452Q.h"
+#include "GPS.h"
+
+void task_gps_packet_recieved();
+
+#endif

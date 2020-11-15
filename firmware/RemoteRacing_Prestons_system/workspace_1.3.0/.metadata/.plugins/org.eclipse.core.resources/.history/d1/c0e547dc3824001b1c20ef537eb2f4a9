@@ -1,0 +1,13 @@
+/*
+ * MMA8452Q.h
+ *
+ *  Created on: Nov 11, 2020
+ *      Author: pjfossee
+ */
+
+#ifndef CUSTOM_INC_MMA8452Q_H_
+#define CUSTOM_INC_MMA8452Q_H_
+
+
+
+#endif /* CUSTOM_INC_MMA8452Q_H_ */

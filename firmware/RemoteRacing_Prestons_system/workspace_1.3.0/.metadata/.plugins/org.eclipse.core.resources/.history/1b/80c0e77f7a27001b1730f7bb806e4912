@@ -1,0 +1,5 @@
+#include "racing_tasks.h"
+
+void RTOS_INIT() {
+	vTaskStartScheduler();
+}

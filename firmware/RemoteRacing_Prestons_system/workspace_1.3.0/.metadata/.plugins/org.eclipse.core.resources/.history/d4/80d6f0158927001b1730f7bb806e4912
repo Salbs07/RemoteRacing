@@ -1,0 +1,22 @@
+#ifndef RACING_DATA_H
+#define RACING_DATA_H
+
+#include "main.h"
+
+
+#define BLE_TX_DATA_SIZE 120
+#define PS_TX_BUFFER_SIZE GPS_TX_BUFFER_SIZE
+
+typedef struct {
+	uint8_t gps_data[PS_TX_BUFFER_SIZE];
+	float imu_data[3];
+
+} ble_data_packet_tx;
+
+typedef enum {POSITIONS = 0x00000000, RACE_LENGTH = 0x00000001, RACE_START = 0x00000002, RACE_END = 0x00000003} command_t;
+
+typedef struct {
+	command_t command;
+	uint8_t command_data[BLE_TX_DATA_SIZE];
+} ble_data_packet_rx;
+#endif

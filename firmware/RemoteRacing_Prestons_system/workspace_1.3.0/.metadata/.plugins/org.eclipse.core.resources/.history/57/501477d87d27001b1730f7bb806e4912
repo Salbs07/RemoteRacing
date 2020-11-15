@@ -1,0 +1,15 @@
+#ifndef RACING_TASKS_H_
+#define RACING_TASKS_H_
+
+#include "main.h"
+#include "FreeRTOS.h"
+#include "MMA8452Q.h"
+#include "GPS.h"
+
+void RTOS_INIT();
+void RTOS_INIT_TASKS();
+
+xTaskHandle gps_packet_recieved_handle;
+void task_gps_packet_recieved();
+
+#endif

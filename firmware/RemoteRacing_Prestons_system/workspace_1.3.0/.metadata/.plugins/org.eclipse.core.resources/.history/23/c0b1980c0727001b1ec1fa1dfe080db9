@@ -1,0 +1,10 @@
+#ifndef GPS_H_
+#define GPS_H_
+
+#include "main.h"
+
+extern UART_HandleTypeDef huart1;
+
+uint8_t gps_init();
+
+#endif
