@@ -1,4 +1,0 @@
-GPS.c:39:9:gps_init	104	static
-GPS.c:80:6:gps_log_data	8	static
-GPS.c:92:6:gps_Recieve_Full	8	static
-GPS.c:99:6:gps_Recieve_Half	8	static

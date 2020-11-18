@@ -1,0 +1,20 @@
+#include "racing_tasks.h"
+#include "BLE.h"
+
+void RTOS_INIT() {
+	gpsDataReady_s = xSemaphoreCreateBinary();
+	sendBlePacket_s = xSemaphoreCreateBinary();
+	vTaskStartScheduler();
+}
+
+void RTOS_INIT_TASKS() {
+	xTaskCreate(task_send_ble_packet, "send_ble_packet", 256, NULL, 0, gps_packet_recieved_handle);
+}
+
+void task_send_ble_packet() {
+	for(;;) {
+        if (gps_get_data()) {
+
+        }
+	}
+}

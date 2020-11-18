@@ -1,0 +1,28 @@
+#include "racing_tasks.h"
+
+void RTOS_INIT() {
+	vTaskStartScheduler();
+}
+
+void RTOS_INIT_TASKS() {
+	xTaskCreate(task_send_ble_packet, "send_ble_packet", 256, NULL, 0, gps_packet_recieved_handle);
+}
+
+void task_send_ble_packet() {
+	TickType_t xLastWakeTime;
+	const TickType_t xFrequency = 50;
+	xLastWakeTime = xTaskGetTickCount();
+	for(;;) {
+		vTaskDelayUntil( &xLastWakeTime, xFrequency );
+		uint8_t ** gps_read_data = gps_get_data();
+        if (gps_read_data[1] != NULL) {
+        	memcpy(ble_tx_packet.gps_data, gps_read_data[0], gps_read_data[1] - gps_read_data[0]);
+        	ble_tx_packet.imu_data[0] = getX();
+        	ble_tx_packet.imu_data[0] = getY();
+        	ble_tx_packet.imu_data[0] = getZ();
+        	ble_tx_packet.ending = {'-', '-', '-', '\r', '\n'};
+
+        	ble_send(&ble_tx_packet);
+        }
+	}
+}

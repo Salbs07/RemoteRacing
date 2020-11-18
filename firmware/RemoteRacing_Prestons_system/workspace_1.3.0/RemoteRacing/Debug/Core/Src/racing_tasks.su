@@ -1,4 +1,0 @@
-racing_tasks.c:3:6:RTOS_INIT	8	static
-racing_tasks.c:9:6:RTOS_INIT_TASKS	16	static
-racing_tasks.c:13:6:task_gps_packet_recieved	8	static
-racing_tasks.c:22:6:task_send_ble_packet	8	static
