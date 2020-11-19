@@ -23,7 +23,7 @@
 
 /* Private includes ----------------------------------------------------------*/
 /* USER CODE BEGIN Includes */
-
+#include "MMA8452Q.h"
 /* USER CODE END Includes */
 
 /* Private typedef -----------------------------------------------------------*/
@@ -103,13 +103,21 @@ int main(void)
   MX_USART1_UART_Init();
   MX_USART2_UART_Init();
   /* USER CODE BEGIN 2 */
-
+  initMMA8452Q(MMA8452Q_Address, SCALE_2G, DR_800_Hz);
   /* USER CODE END 2 */
 
   /* Infinite loop */
   /* USER CODE BEGIN WHILE */
   while (1)
   {
+	  // IMU test code
+//	  if (available()){
+//	  		  read();
+//	  		  float temp_x = X;
+//	  		  float temp_y = Y;
+//	  		  float temp_z = Z;
+//	  		  HAL_Delay(200);
+//	  }
     /* USER CODE END WHILE */
 
     /* USER CODE BEGIN 3 */

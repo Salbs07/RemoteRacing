@@ -105,7 +105,7 @@ void read(void){
 
 // write an array of "len" bytes ("buffer")
 void writeRegisters(MMA8452Q_Register reg, uint8_t *buffer, uint16_t len){
-	HAL_I2C_Mem_Write(&hi2c2, (MMA8452Q_Address << 1), reg, 1, buffer, len, 10);
+	HAL_I2C_Mem_Write(&hi2c1, (MMA8452Q_Address << 1), reg, 1, buffer, len, 10);
 }
 
 // write a single byte of data to a register in the MMA8452Q
@@ -120,7 +120,7 @@ uint8_t readRegister(MMA8452Q_Register reg){
 }
 
 void readRegisters(MMA8452Q_Register reg, uint8_t *buffer, uint16_t len){
-	HAL_I2C_Mem_Read(&hi2c2, (MMA8452Q_Address << 1), reg, 1, buffer, len, 10);
+	HAL_I2C_Mem_Read(&hi2c1, (MMA8452Q_Address << 1), reg, 1, buffer, len, 10);
 }
 
 // Returns raw X acceleration data

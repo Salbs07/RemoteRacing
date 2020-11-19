@@ -86,7 +86,7 @@ uint8_t SCALE;		// tracks accelerometer scale
 float X, Y, Z;		// holds updated calculated acceleration
 
 // accelerometer I2C handle
-extern I2C_HandleTypeDef hi2c2;
+extern I2C_HandleTypeDef hi2c1;
 
 
 uint8_t initMMA8452Q(uint8_t addr, MMA8452Q_Scale scale, MMA8452Q_Data_Rate rate);

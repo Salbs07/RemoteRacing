@@ -1,0 +1,10 @@
+16:26:09 **** Incremental Build of configuration Debug for project RemoteRacing ****
+make -j8 all 
+arm-none-eabi-size   RemoteRacing.elf 
+   text	   data	    bss	    dec	    hex	filename
+  14196	     12	   1988	  16196	   3f44	RemoteRacing.elf
+Finished building: default.size.stdout
+ 
+
+16:26:10 Build Finished. 0 errors, 0 warnings. (took 885ms)
+
