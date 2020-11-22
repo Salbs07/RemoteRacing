@@ -26,24 +26,6 @@
 #define LCD_WR_Pin GPIO_PIN_4
 #define LCD_WR_GPIO_Port GPIOC
 #endif
-#ifndef D0_Pin
-#define D7_Pin GPIO_PIN_12
-#define D7_GPIO_Port GPIOB
-#define D6_Pin GPIO_PIN_13
-#define D6_GPIO_Port GPIOB
-#define D5_Pin GPIO_PIN_14
-#define D5_GPIO_Port GPIOB
-#define D4_Pin GPIO_PIN_15
-#define D4_GPIO_Port GPIOB
-#define D3_Pin GPIO_PIN_6
-#define D3_GPIO_Port GPIOC
-#define D2_Pin GPIO_PIN_7
-#define D2_GPIO_Port GPIOC
-#define D1_Pin GPIO_PIN_8
-#define D1_GPIO_Port GPIOC
-#define D0_Pin GPIO_PIN_9
-#define D0_GPIO_Port GPIOC
-#endif
 
 #define ILI9341_TFTWIDTH 240  ///< ILI9341 max TFT width
 #define ILI9341_TFTHEIGHT 320 ///< ILI9341 max TFT height
@@ -150,15 +132,18 @@
 /**************************************************************************/
   int16_t _width;       ///< Display width as modified by current rotation
   int16_t _height;      ///< Display height as modified by current rotation
-  int16_t cursor_x;     ///< x location to start print()ing text
-  int16_t cursor_y;     ///< y location to start print()ing text
-  uint16_t textcolor;   ///< 16-bit background color for print()
-  uint16_t textbgcolor; ///< 16-bit text color for print()
-  uint8_t textsize_x;   ///< Desired magnification in X-axis of text to print()
-  uint8_t textsize_y;   ///< Desired magnification in Y-axis of text to print()
+  int16_t cursor_x;     ///< x location to start printing text
+  int16_t cursor_y;     ///< y location to start printing text
+  uint16_t textcolor;   ///< 16-bit background color for
+  uint16_t textbgcolor; ///< 16-bit text color for
+  uint16_t bgcolor;		///< 16-bit background color
+  uint8_t textsize_x;   ///< Desired magnification in X-axis of text
+  uint8_t textsize_y;   ///< Desired magnification in Y-axis of text
   uint8_t rotation;     ///< Display rotation (0 thru 3)
   unsigned char wrap;            ///< If set, 'wrap' text at right edge of display
   unsigned char _cp437;          ///< If set, use correct CP437 charset (default is off
+  char *text;			///< previous text written to the screen
+  uint8_t textlength;	///< the length of the text written to the screen
 
 
 /**************************************************************************/
@@ -196,6 +181,9 @@ void setCursor(int16_t x, int16_t y);
 void drawChar(int16_t x, int16_t y, unsigned char c, uint16_t color,
                 uint16_t bg, uint8_t size_x, uint8_t size_y);
 size_t write(uint8_t c);
+void erase(void);
+void LCD_draw_text_helper(char* buffer, uint8_t len, uint16_t x, uint16_t y,
+		uint8_t s, uint16_t color);
 
 /**************************************************************************/
 /*
@@ -358,5 +346,8 @@ static const unsigned char font[] = {
     0x3C, 0x00, 0x00, 0x00, 0x00, 0x00 // #255 NBSP
 };
 
+// This library is heavily based on the Adafruit_ILI9341 and GFX library
+// Adafruit_ILI9341: 	https://github.com/adafruit/Adafruit_ILI9341
+// GFX: 				https://github.com/adafruit/Adafruit-GFX-Library
 
 #endif /* INC_LCD_H_ */

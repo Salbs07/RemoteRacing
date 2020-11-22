@@ -6,7 +6,8 @@
 */
 /**************************************************************************/
 // TODO:
-// 1) follow the schematic pinout - LCD screen won't work otherwise
+// 1) follow pinout on the PCB - the code has been changed to take into account
+//		the pinout change.
 // 2) instantiate LCD_CS, LCD_RD, and LCD_WR with GPIO output level == high
 
 /*
@@ -15,12 +16,10 @@
 	char greeting[] = "Hello!";
 	...
   	LCD_Init();
-    fillScreen(ILI9341_OLIVE);
+    	fillScreen(ILI9341_OLIVE);
+    	// LCD_draw_text erases all text on screen (if any)
 	LCD_draw_text(greeting, 7, 0, 0, 6, ILI9341_BLACK);
  */
-
-// Note: An easy way to remove text is to write the same text but in the same
-//		color as the background. It's much faster!
 
 
 /**************************************************************************/
@@ -42,21 +41,13 @@ void LCD_Init(void) {
 
 	  _width = ILI9341_TFTWIDTH;
 	  _height = ILI9341_TFTHEIGHT;
-	  rotation = 1;
 	  cursor_y = cursor_x = 0;
 	  textsize_x = textsize_y = 1;
-	  textcolor = textbgcolor = 0xFFFF;
+	  textcolor = textbgcolor = bgcolor = 0xFFFF;
 	  wrap = 1;
 	  _cp437 = 0;
-
-	    // Toggles the logic analyzer //////////////////////////
-	    HAL_GPIO_WritePin(LCD_DC_GPIO_Port, LCD_DC_Pin, GPIO_PIN_SET);
-	    HAL_Delay(150);
-	    HAL_GPIO_WritePin(LCD_DC_GPIO_Port, LCD_DC_Pin, GPIO_PIN_RESET);
-	    HAL_Delay(150);
-	    HAL_GPIO_WritePin(LCD_DC_GPIO_Port, LCD_DC_Pin, GPIO_PIN_SET);
-	    HAL_Delay(150);
-	    // TODO: (FOR DEBUGGING - CAN BE REMOVED) ///////////////
+	  text = NULL;
+	  textlength = 0;
 
 	    // Resets the LCD
 	    sendCommand(ILI9341_SWRESET);
@@ -72,18 +63,8 @@ void LCD_Init(void) {
 	     	 HAL_Delay(150);
 	    }
 
-
 	    // sets the screen to display text in landscape mode
 	 	 setRotation(1);
-
-	 	  // read diagnostics ////////////////////////////////////
-	 	  x = readcommand8(ILI9341_RDMODE);		// should return 0x94 or 0x84
-	 	  x = readcommand8(ILI9341_RDMADCTL);	// should return 0x48
-	 	  x = readcommand8(ILI9341_RDPIXFMT);	// should return 0x5, 0x6, or anything really...
-	 	  x = readcommand8(ILI9341_RDIMGFMT);	// should return 0x80
-	 	  x = readcommand8(ILI9341_RDSELFDIAG);	// should return 0xc0
-	 	  HAL_Delay(1);
-	 	  // TODO: (FOR DEBUGGING - CAN BE REMOVED) ///////////////
 
 }
 
@@ -94,6 +75,7 @@ void LCD_Init(void) {
 */
 /**************************************************************************/
 void fillScreen(uint16_t color) {
+	bgcolor = color;
 	fillRect(0, 0, _width, _height, color);
 }
 
@@ -165,14 +147,8 @@ void fillRect(int16_t x, int16_t y, int16_t w, int16_t h, uint16_t color) {
 /**************************************************************************/
 void LCD_draw_text(char* buffer, uint8_t len, uint16_t x, uint16_t y,
 		uint8_t s, uint16_t color) {
-	uint8_t i;
-	setTextSize(s);
-	setTextColor(color);
-	setCursor(x, y);
-	for (i = 0; i < len; i++) {
-		write(*(buffer + i));
-	}
-
+	erase();
+	LCD_draw_text_helper(buffer, len, x ,y, s, color);
 }
 
 
@@ -258,12 +234,29 @@ void sendCommands16(uint8_t commandByte, const uint16_t *dataHalfWords, uint8_t 
 	HAL_GPIO_WritePin(LCD_CS_GPIO_Port, LCD_CS_Pin, GPIO_PIN_SET);
 }
 
+
 /*
     @brief  Writes data to LCD
     @param    d		The data to be sent
 */
 void write8Bit(uint8_t d) {
-	// TODO: if different pins from LCD.h are used, this function will NOT work!
+	// A bit slower than before - about 1 sec difference for fillScreen()
+	GPIOB->BRR = 0xf000;
+	GPIOC->BRR = 0x03c0;
+	GPIOC->BSRR  |= ((d & 0x01)<<8);
+	GPIOC->BSRR  |= ((d & 0x02)<<5);
+	GPIOB->BSRR  |= ((d & 0x04)<<12);
+	GPIOB->BSRR  |= ((d & 0x08)<<9);
+
+	GPIOC->BSRR  |= ((d & 0x10)<<5);
+	GPIOC->BSRR  |= ((d & 0x20)<<2);
+	GPIOB->BSRR  |= ((d & 0x40)<<9);
+	GPIOB->BSRR  |= ((d & 0x80)<<6);
+}
+// old version of function for reference
+/*
+void write8Bit(uint8_t d) {
+	// 		 if different pins from LCD.h are used, this function will NOT work!
 	// 		 This code is optimized but not portable
 	uint32_t x;
 	   d = (d & 0xF0) >> 4 | (d & 0x0F) << 4;
@@ -275,6 +268,51 @@ void write8Bit(uint8_t d) {
 	x = (d & 0xf0) << 2;
 	GPIOC->BSRR = x;
 	GPIOC->BRR  = ~(x | 0xfffffc3f);
+}
+*/
+
+
+/*
+    @brief  Draw a single pixel to the display at requested coordinates.
+            Not self-contained; should follow a startWrite() call.
+    @param  x      Horizontal position (0 = left).
+    @param  y      Vertical position   (0 = top).
+    @param  color  16-bit pixel color in '565' RGB format.
+*/
+void writePixel(int16_t x, int16_t y, uint16_t color) {
+	  if ((x >= 0) && (x < _width) && (y >= 0) && (y < _height)) {
+		  //uint8_t data[] = {color >> 8, color & 0xFF};
+	    // THEN set up transaction (if needed) and draw...
+	    setAddrWindow(x, y, 1, 1);
+
+	    HAL_GPIO_WritePin(LCD_CS_GPIO_Port, LCD_CS_Pin, GPIO_PIN_RESET);
+		HAL_GPIO_WritePin(LCD_DC_GPIO_Port, LCD_DC_Pin, GPIO_PIN_SET);
+
+	    HAL_GPIO_WritePin(LCD_WR_GPIO_Port, LCD_WR_Pin, GPIO_PIN_RESET);
+	    write8Bit((color >> 8));
+	    HAL_GPIO_WritePin(LCD_WR_GPIO_Port, LCD_WR_Pin, GPIO_PIN_SET);
+	    HAL_GPIO_WritePin(LCD_WR_GPIO_Port, LCD_WR_Pin, GPIO_PIN_RESET);
+	    write8Bit((color & 0xFF));
+	    HAL_GPIO_WritePin(LCD_WR_GPIO_Port, LCD_WR_Pin, GPIO_PIN_SET);
+
+		HAL_GPIO_WritePin(LCD_CS_GPIO_Port, LCD_CS_Pin, GPIO_PIN_SET);
+	  }
+}
+
+/*
+    @brief   Set the "address window" - the rectangle we will write to RAM with
+   the next chunk of      SPI data writes. The ILI9341 will automatically wrap
+   the data as each row is filled
+    @param   x1  TFT memory 'x' origin
+    @param   y1  TFT memory 'y' origin
+    @param   w   Width of rectangle
+    @param   h   Height of rectangle
+*/
+void setAddrWindow(uint16_t x1, uint16_t y1, uint16_t w, uint16_t h) {
+	  uint16_t x[2] = {x1, x1 + w - 1}, y[2] = {y1, y1 + h - 1};
+	  sendCommands16(ILI9341_CASET, x, 2);
+	  sendCommands16(ILI9341_PASET, y, 2);
+	  sendCommand(ILI9341_RAMWR); // Write to RAM
 }
 
 /*
@@ -492,158 +530,26 @@ size_t write(uint8_t c) {
 }
 
 /*
-    @brief   Set the "address window" - the rectangle we will write to RAM with
-   the next chunk of      SPI data writes. The ILI9341 will automatically wrap
-   the data as each row is filled
-    @param   x1  TFT memory 'x' origin
-    @param   y1  TFT memory 'y' origin
-    @param   w   Width of rectangle
-    @param   h   Height of rectangle
+    @brief  Erases all text on screen
 */
-void setAddrWindow(uint16_t x1, uint16_t y1, uint16_t w, uint16_t h) {
-	  uint16_t x[2] = {x1, x1 + w - 1}, y[2] = {y1, y1 + h - 1};
-	  sendCommands16(ILI9341_CASET, x, 2);
-	  sendCommands16(ILI9341_PASET, y, 2);
-	  sendCommand(ILI9341_RAMWR); // Write to RAM
+void erase(void) {
+	if (text)
+		LCD_draw_text_helper(text, textlength, 0, 0, textsize_x, bgcolor);
 }
 
-/*
-    @brief  Draw a single pixel to the display at requested coordinates.
-            Not self-contained; should follow a startWrite() call.
-    @param  x      Horizontal position (0 = left).
-    @param  y      Vertical position   (0 = top).
-    @param  color  16-bit pixel color in '565' RGB format.
-*/
-void writePixel(int16_t x, int16_t y, uint16_t color) {
-	  if ((x >= 0) && (x < _width) && (y >= 0) && (y < _height)) {
-		  //uint8_t data[] = {color >> 8, color & 0xFF};
-	    // THEN set up transaction (if needed) and draw...
-	    setAddrWindow(x, y, 1, 1);
-
-	    HAL_GPIO_WritePin(LCD_CS_GPIO_Port, LCD_CS_Pin, GPIO_PIN_RESET);
-		HAL_GPIO_WritePin(LCD_DC_GPIO_Port, LCD_DC_Pin, GPIO_PIN_SET);
-
-	    HAL_GPIO_WritePin(LCD_WR_GPIO_Port, LCD_WR_Pin, GPIO_PIN_RESET);
-	    write8Bit((color >> 8));
-	    HAL_GPIO_WritePin(LCD_WR_GPIO_Port, LCD_WR_Pin, GPIO_PIN_SET);
-	    HAL_GPIO_WritePin(LCD_WR_GPIO_Port, LCD_WR_Pin, GPIO_PIN_RESET);
-	    write8Bit((color & 0xFF));
-	    HAL_GPIO_WritePin(LCD_WR_GPIO_Port, LCD_WR_Pin, GPIO_PIN_SET);
-
-		HAL_GPIO_WritePin(LCD_CS_GPIO_Port, LCD_CS_Pin, GPIO_PIN_SET);
-	  }
+void LCD_draw_text_helper(char* buffer, uint8_t len, uint16_t x, uint16_t y,
+		uint8_t s, uint16_t color) {
+	uint8_t i;
+	setTextSize(s);
+	setTextColor(color);
+	setCursor(x, y);
+	text = buffer;
+	textlength = len;
+	for (i = 0; i < len; i++) {
+		write(*(buffer + i));
+	}
 }
 
-
-
-/**************************************************************************/
-/*
-     DEBUGGING FUNCTIONS
-*/
-/**************************************************************************/
-
-
-uint8_t readcommand8(uint8_t commandByte) {
-	  uint8_t result;
-	  uint8_t data = 0x10;
-
-	  sendCommands(0xD9, &data, 1);
-
-	  HAL_GPIO_WritePin(LCD_CS_GPIO_Port, LCD_CS_Pin, GPIO_PIN_RESET);
-	  // Command mode
-	  HAL_GPIO_WritePin(LCD_DC_GPIO_Port, LCD_DC_Pin, GPIO_PIN_RESET);
-	  HAL_GPIO_WritePin(LCD_WR_GPIO_Port, LCD_WR_Pin, GPIO_PIN_RESET);
-	  // Send the command byte
-	  write8Bit(commandByte);
-	  HAL_GPIO_WritePin(LCD_WR_GPIO_Port, LCD_WR_Pin, GPIO_PIN_SET);
-	  HAL_Delay(1);
-
-	  resetPins();
-	  set8BitInput();
-	  // Data mode
-	  HAL_GPIO_WritePin(LCD_DC_GPIO_Port, LCD_DC_Pin, GPIO_PIN_SET);
-	  HAL_GPIO_WritePin(LCD_RD_GPIO_Port, LCD_RD_Pin, GPIO_PIN_RESET);
-	  HAL_Delay(1);
-	  // Obtain data from LCD
-	  result = read8Bit();
-	  HAL_GPIO_WritePin(LCD_RD_GPIO_Port, LCD_RD_Pin, GPIO_PIN_SET);
-
-	  HAL_GPIO_WritePin(LCD_RD_GPIO_Port, LCD_RD_Pin, GPIO_PIN_RESET);
-	  HAL_Delay(1);
-	  // Obtain data from LCD
-	  result = read8Bit();
-	  HAL_GPIO_WritePin(LCD_RD_GPIO_Port, LCD_RD_Pin, GPIO_PIN_SET);
-	  HAL_GPIO_WritePin(LCD_CS_GPIO_Port, LCD_CS_Pin, GPIO_PIN_SET);
-		set8BitOutput();
-	  return result;
-}
-uint8_t read8Bit() {
-	uint8_t result = 0;
-	if (HAL_GPIO_ReadPin(D0_GPIO_Port, D0_Pin)) {
-		result |= 0x01;
-	}
-	if (HAL_GPIO_ReadPin(D1_GPIO_Port, D1_Pin)) {
-		result |= 0x02;
-	}
-	if (HAL_GPIO_ReadPin(D2_GPIO_Port, D2_Pin)) {
-		result |= 0x04;
-	}
-	if (HAL_GPIO_ReadPin(D3_GPIO_Port, D3_Pin)) {
-		result |= 0x08;
-	}
-	if (HAL_GPIO_ReadPin(D4_GPIO_Port, D4_Pin)) {
-		result |= 0x10;
-	}
-	if (HAL_GPIO_ReadPin(D5_GPIO_Port, D5_Pin)) {
-		result |= 0x20;
-	}
-	if (HAL_GPIO_ReadPin(D6_GPIO_Port, D6_Pin)) {
-		result |= 0x40;
-	}
-	if (HAL_GPIO_ReadPin(D7_GPIO_Port, D7_Pin)) {
-		result |= 0x80;
-	}
-	return result;
-}
-void resetPins(void) {
-	  /*Configure GPIO pin Output Level */
-	  HAL_GPIO_WritePin(GPIOC, D0_Pin|D1_Pin|D2_Pin|D3_Pin, GPIO_PIN_RESET);
-
-	  /*Configure GPIO pin Output Level */
-	  HAL_GPIO_WritePin(GPIOB, D4_Pin|D5_Pin|D6_Pin|D7_Pin, GPIO_PIN_RESET);
-}
-void set8BitOutput(void) {
-	  GPIO_InitTypeDef GPIO_InitStruct = {0};
-
-	  /*Configure GPIO pins : LCD_WR_Pin D3_Pin D2_Pin D1_Pin
-	                           D0_Pin */
-	  GPIO_InitStruct.Pin = D3_Pin|D2_Pin|D1_Pin|D0_Pin;
-	  GPIO_InitStruct.Mode = GPIO_MODE_OUTPUT_PP;
-	  GPIO_InitStruct.Pull = GPIO_NOPULL;
-	  GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_HIGH;
-	  HAL_GPIO_Init(GPIOC, &GPIO_InitStruct);
-
-	  /*Configure GPIO pins : D7_Pin D6_Pin D5_Pin D4_Pin */
-	  GPIO_InitStruct.Pin = D7_Pin|D6_Pin|D5_Pin|D4_Pin;
-	  GPIO_InitStruct.Mode = GPIO_MODE_OUTPUT_PP;
-	  GPIO_InitStruct.Pull = GPIO_NOPULL;
-	  GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_HIGH;
-	  HAL_GPIO_Init(GPIOB, &GPIO_InitStruct);
-
-}
-void set8BitInput(void) {
-	  GPIO_InitTypeDef GPIO_InitStruct = {0};
-
-	  /*Configure GPIO pins : LCD_WR_Pin D3_Pin D2_Pin D1_Pin
-	                           D0_Pin */
-	  GPIO_InitStruct.Pin = D3_Pin|D2_Pin|D1_Pin|D0_Pin;
-	  GPIO_InitStruct.Mode = GPIO_MODE_INPUT;
-	  GPIO_InitStruct.Pull = GPIO_NOPULL;
-	  HAL_GPIO_Init(GPIOC, &GPIO_InitStruct);
-
-	  /*Configure GPIO pins : D7_Pin D6_Pin D5_Pin D4_Pin */
-	  GPIO_InitStruct.Pin = D7_Pin|D6_Pin|D5_Pin|D4_Pin;
-	  GPIO_InitStruct.Mode = GPIO_MODE_INPUT;
-	  GPIO_InitStruct.Pull = GPIO_NOPULL;
-	  HAL_GPIO_Init(GPIOB, &GPIO_InitStruct);
-}
+// This library is heavily based on the Adafruit_ILI9341 and GFX library
+// Adafruit_ILI9341: 	https://github.com/adafruit/Adafruit_ILI9341
+// GFX: 		https://github.com/adafruit/Adafruit-GFX-Library
