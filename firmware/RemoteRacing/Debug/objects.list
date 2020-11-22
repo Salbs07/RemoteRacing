@@ -17,6 +17,7 @@
 "Drivers/STM32F0xx_HAL_Driver/Src/stm32f0xx_hal_uart.o"
 "Drivers/STM32F0xx_HAL_Driver/Src/stm32f0xx_hal_uart_ex.o"
 "Src/LCD.o"
+"Src/LEDs.o"
 "Src/MMA8452Q.o"
 "Src/main.o"
 "Src/stm32f0xx_hal_msp.o"

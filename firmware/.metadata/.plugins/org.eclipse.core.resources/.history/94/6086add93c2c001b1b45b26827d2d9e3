@@ -1,0 +1,10 @@
+#include <LEDs.h>
+
+void toggleLED(LED_Color LED){
+//	HAL_GPIO_WritePin();
+}
+
+
+void setLED(LED_Color LED, LED_State state){
+//	HAL_GPIO_TogglePin();
+}

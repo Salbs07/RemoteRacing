@@ -1,0 +1,23 @@
+#ifndef LEDS_H_
+#define LEDS_H_
+
+#include <main.h>
+
+typedef enum{
+	RED,
+	YELLOW,
+	GREEN
+} LED_Color;
+
+typedef enum{
+	OFF,
+	ON
+} LED_State;
+
+uint16_t LED_Ports[3] = {LED_RED_GPIO_Port, LED_YELLOW_GPIO_Port, LED_GREEN_GPIO_Port};
+uint16_t LED_Pins[3] = {LED_RED_Pin, LED_YELLOW_Pin, LED_GREEN_Pin};
+
+void toggleLED(LED_Color LED);
+void setLED(LED_Color LED, LED_State state);
+
+#endif // LEDS_H_

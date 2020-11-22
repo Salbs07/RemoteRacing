@@ -1,60 +1,21 @@
-15:40:01 **** Incremental Build of configuration Debug for project RemoteRacing ****
+16:16:54 **** Incremental Build of configuration Debug for project RemoteRacing ****
 make -j8 all 
-arm-none-eabi-gcc "../Src/MMA8452Q.c" -mcpu=cortex-m0 -std=gnu11 -g3 -DUSE_HAL_DRIVER -DSTM32F030x8 -DDEBUG -c -I../Inc -I../Drivers/STM32F0xx_HAL_Driver/Inc -I../Drivers/CMSIS/Include -I../Drivers/STM32F0xx_HAL_Driver/Inc/Legacy -I../Drivers/CMSIS/Device/ST/STM32F0xx/Include -O0 -ffunction-sections -fdata-sections -Wall -fstack-usage -MMD -MP -MF"Src/MMA8452Q.d" -MT"Src/MMA8452Q.o" --specs=nano.specs -mfloat-abi=soft -mthumb -o "Src/MMA8452Q.o"
 arm-none-eabi-gcc "../Src/main.c" -mcpu=cortex-m0 -std=gnu11 -g3 -DUSE_HAL_DRIVER -DSTM32F030x8 -DDEBUG -c -I../Inc -I../Drivers/STM32F0xx_HAL_Driver/Inc -I../Drivers/CMSIS/Include -I../Drivers/STM32F0xx_HAL_Driver/Inc/Legacy -I../Drivers/CMSIS/Device/ST/STM32F0xx/Include -O0 -ffunction-sections -fdata-sections -Wall -fstack-usage -MMD -MP -MF"Src/main.d" -MT"Src/main.o" --specs=nano.specs -mfloat-abi=soft -mthumb -o "Src/main.o"
-../Src/main.c: In function 'main':
-../Src/main.c:117:14: warning: unused variable 'temp_z' [-Wunused-variable]
-        float temp_z = Z;
-              ^~~~~~
-../Src/main.c:116:14: warning: unused variable 'temp_y' [-Wunused-variable]
-        float temp_y = Y;
-              ^~~~~~
-../Src/main.c:115:14: warning: unused variable 'temp_x' [-Wunused-variable]
-        float temp_x = X;
-              ^~~~~~
 arm-none-eabi-gcc -o "RemoteRacing.elf" @"objects.list"   -mcpu=cortex-m0 -T"C:\Users\DatBoi\RemoteRacing\firmware\RemoteRacing\STM32F030R8TX_FLASH.ld" --specs=nosys.specs -Wl,-Map="RemoteRacing.map" -Wl,--gc-sections -static --specs=nano.specs -mfloat-abi=soft -mthumb -Wl,--start-group -lc -lm -Wl,--end-group
 Finished building target: RemoteRacing.elf
  
 arm-none-eabi-objdump -h -S  RemoteRacing.elf  > "RemoteRacing.list"
 arm-none-eabi-size   RemoteRacing.elf 
    text	   data	    bss	    dec	    hex	filename
-  14196	     12	   1988	  16196	   3f44	RemoteRacing.elf
+  12544	     12	   1988	  14544	   38d0	RemoteRacing.elf
 Finished building: default.size.stdout
  
 Finished building: RemoteRacing.list
  
-15:40:06 **** Incremental Build of configuration Debug for project RemoteRacing ****
+16:16:58 **** Incremental Build of configuration Debug for project RemoteRacing ****
 make -j8 all 
 arm-none-eabi-size   RemoteRacing.elf 
    text	   data	    bss	    dec	    hex	filename
-  14196	     12	   1988	  16196	   3f44	RemoteRacing.elf
-Finished building: default.size.stdout
- 
-15:40:28 **** Incremental Build of configuration Debug for project RemoteRacing ****
-make -j8 all 
-arm-none-eabi-size   RemoteRacing.elf 
-   text	   data	    bss	    dec	    hex	filename
-  14196	     12	   1988	  16196	   3f44	RemoteRacing.elf
-Finished building: default.size.stdout
- 
-15:43:40 **** Incremental Build of configuration Debug for project RemoteRacing ****
-make -j8 all 
-arm-none-eabi-size   RemoteRacing.elf 
-   text	   data	    bss	    dec	    hex	filename
-  14196	     12	   1988	  16196	   3f44	RemoteRacing.elf
-Finished building: default.size.stdout
- 
-16:06:57 **** Incremental Build of configuration Debug for project RemoteRacing ****
-make -j8 all 
-arm-none-eabi-size   RemoteRacing.elf 
-   text	   data	    bss	    dec	    hex	filename
-  14196	     12	   1988	  16196	   3f44	RemoteRacing.elf
-Finished building: default.size.stdout
- 
-16:26:09 **** Incremental Build of configuration Debug for project RemoteRacing ****
-make -j8 all 
-arm-none-eabi-size   RemoteRacing.elf 
-   text	   data	    bss	    dec	    hex	filename
-  14196	     12	   1988	  16196	   3f44	RemoteRacing.elf
+  12544	     12	   1988	  14544	   38d0	RemoteRacing.elf
 Finished building: default.size.stdout
  

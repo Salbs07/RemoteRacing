@@ -23,7 +23,8 @@
 
 /* Private includes ----------------------------------------------------------*/
 /* USER CODE BEGIN Includes */
-#include "MMA8452Q.h"
+#include <MMA8452Q.h>
+#include <LEDs.h>
 /* USER CODE END Includes */
 
 /* Private typedef -----------------------------------------------------------*/

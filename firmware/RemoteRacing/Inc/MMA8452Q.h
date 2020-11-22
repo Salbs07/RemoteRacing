@@ -57,7 +57,7 @@ typedef enum{
 	OFF_X = 0x2F,
 	OFF_Y = 0x30,
 	OFF_Z = 0x31
-}MMA8452Q_Register;
+} MMA8452Q_Register;
 
 typedef enum{
 	SCALE_2G = 2,

@@ -5,6 +5,7 @@
 # Add inputs and outputs from these tool invocations to the build variables 
 C_SRCS += \
 ../Src/LCD.c \
+../Src/LEDs.c \
 ../Src/MMA8452Q.c \
 ../Src/main.c \
 ../Src/stm32f0xx_hal_msp.c \
@@ -15,6 +16,7 @@ C_SRCS += \
 
 OBJS += \
 ./Src/LCD.o \
+./Src/LEDs.o \
 ./Src/MMA8452Q.o \
 ./Src/main.o \
 ./Src/stm32f0xx_hal_msp.o \
@@ -25,6 +27,7 @@ OBJS += \
 
 C_DEPS += \
 ./Src/LCD.d \
+./Src/LEDs.d \
 ./Src/MMA8452Q.d \
 ./Src/main.d \
 ./Src/stm32f0xx_hal_msp.d \
@@ -37,6 +40,8 @@ C_DEPS += \
 # Each subdirectory must supply rules for building sources it contributes
 Src/LCD.o: ../Src/LCD.c
 	arm-none-eabi-gcc "$<" -mcpu=cortex-m0 -std=gnu11 -g3 -DUSE_HAL_DRIVER -DSTM32F030x8 -DDEBUG -c -I../Inc -I../Drivers/STM32F0xx_HAL_Driver/Inc -I../Drivers/CMSIS/Include -I../Drivers/STM32F0xx_HAL_Driver/Inc/Legacy -I../Drivers/CMSIS/Device/ST/STM32F0xx/Include -O0 -ffunction-sections -fdata-sections -Wall -fstack-usage -MMD -MP -MF"Src/LCD.d" -MT"$@" --specs=nano.specs -mfloat-abi=soft -mthumb -o "$@"
+Src/LEDs.o: ../Src/LEDs.c
+	arm-none-eabi-gcc "$<" -mcpu=cortex-m0 -std=gnu11 -g3 -DUSE_HAL_DRIVER -DSTM32F030x8 -DDEBUG -c -I../Inc -I../Drivers/STM32F0xx_HAL_Driver/Inc -I../Drivers/CMSIS/Include -I../Drivers/STM32F0xx_HAL_Driver/Inc/Legacy -I../Drivers/CMSIS/Device/ST/STM32F0xx/Include -O0 -ffunction-sections -fdata-sections -Wall -fstack-usage -MMD -MP -MF"Src/LEDs.d" -MT"$@" --specs=nano.specs -mfloat-abi=soft -mthumb -o "$@"
 Src/MMA8452Q.o: ../Src/MMA8452Q.c
 	arm-none-eabi-gcc "$<" -mcpu=cortex-m0 -std=gnu11 -g3 -DUSE_HAL_DRIVER -DSTM32F030x8 -DDEBUG -c -I../Inc -I../Drivers/STM32F0xx_HAL_Driver/Inc -I../Drivers/CMSIS/Include -I../Drivers/STM32F0xx_HAL_Driver/Inc/Legacy -I../Drivers/CMSIS/Device/ST/STM32F0xx/Include -O0 -ffunction-sections -fdata-sections -Wall -fstack-usage -MMD -MP -MF"Src/MMA8452Q.d" -MT"$@" --specs=nano.specs -mfloat-abi=soft -mthumb -o "$@"
 Src/main.o: ../Src/main.c
