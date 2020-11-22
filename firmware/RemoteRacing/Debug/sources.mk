@@ -18,5 +18,9 @@ C_DEPS :=
 SUBDIRS := \
 Drivers/STM32F0xx_HAL_Driver/Src \
 Src \
+Src/FreeRTOS/Source/CMSIS_RTOS \
+Src/FreeRTOS/Source \
+Src/FreeRTOS/Source/portable/GCC/ARM_CM0 \
+Src/FreeRTOS/Source/portable/MemMang \
 Startup \
 
