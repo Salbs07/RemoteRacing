@@ -110,6 +110,7 @@ int main(void)
   initMMA8452Q(MMA8452Q_Address, SCALE_2G, DR_800_Hz);
   ble_init(&huart1);
   gps_init(&huart2);
+  LCD_Init();
   RTOS_INIT_TASKS();
   RTOS_INIT();
   /* USER CODE END 2 */
