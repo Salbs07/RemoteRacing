@@ -1,11 +1,13 @@
 #include "racing_tasks.h"
 
 void RTOS_INIT() {
+	ble_receive_ready = xSemaphoreCreateBinary();
 	vTaskStartScheduler();
 }
 
 void RTOS_INIT_TASKS() {
 	xTaskCreate(task_send_ble_packet, "send_ble_packet", 256, NULL, 0, task_send_ble_packet_handle);
+	xTaskCreate(task_receive_ble_packet, "receive_ble_packet", 256, NULL, 1, task_receive_ble_packet_handle);
 }
 
 void task_send_ble_packet() {
@@ -38,5 +40,40 @@ void task_send_ble_packet() {
 
         	ble_send(&huart1, &ble_tx_packet);
         }
+	}
+}
+void task_receive_ble_packet() {
+	for(;;) {
+		if( xSemaphoreTake(ble_receive_ready, portMAX_DELAY) == pdTRUE ) {
+		//xSemaphoreTake(ble_receive_ready, portMAX_DELAY);
+		switch((uint8_t)RX_BUFFER.command - 64) {
+		case GPS_RIP_2020NOV:
+			// display messsage that the GPS has moved onto the next life
+			 fillScreen(ILI9341_LIGHTGREY);
+			break;
+		case IDLE:
+			// "use the app to start a race"
+			 fillScreen(ILI9341_BLACK);
+			break;
+		case RACE_START:
+			// "put phone down, race starting soon"
+			// LED countdown
+			// "plz dont die"
+			break;
+		case POS_UPDATE:
+			// current driver position on screen
+			// x miles/ total amnt of miles
+			break;
+		case RACE_END:
+			// "Finish!"
+			// driver time
+			break;
+		case RACE_END_ALL:
+			// Positions of each racer
+			break;
+		default:
+			break;
+		}
+	}
 	}
 }
