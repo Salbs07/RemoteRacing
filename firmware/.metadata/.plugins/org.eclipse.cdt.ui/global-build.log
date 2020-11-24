@@ -1,163 +1,21 @@
-22:11:23 **** Incremental Build of configuration Debug for project RemoteRacing ****
+19:43:45 **** Incremental Build of configuration Debug for project RemoteRacing ****
 make -j8 all 
-arm-none-eabi-gcc "../Src/GPS.c" -mcpu=cortex-m0 -std=gnu11 -g3 -DUSE_HAL_DRIVER -DSTM32F030x8 -DDEBUG -c -I../Inc -I../Drivers/STM32F0xx_HAL_Driver/Inc -I../Drivers/CMSIS/Include -I"C:/Users/DatBoi/RemoteRacing/firmware/RemoteRacing/Src/FreeRTOS/Source/portable/GCC/ARM_CM0" -I../Drivers/STM32F0xx_HAL_Driver/Inc/Legacy -I../Drivers/CMSIS/Device/ST/STM32F0xx/Include -I"C:/Users/DatBoi/RemoteRacing/firmware/RemoteRacing/Src/FreeRTOS/Source/portable/MemMang" -I"C:/Users/DatBoi/RemoteRacing/firmware/RemoteRacing/Src/FreeRTOS/Source/include" -O0 -ffunction-sections -fdata-sections -Wall -fstack-usage -MMD -MP -MF"Src/GPS.d" -MT"Src/GPS.o" --specs=nano.specs -mfloat-abi=soft -mthumb -o "Src/GPS.o"
-arm-none-eabi-gcc "../Src/LEDs.c" -mcpu=cortex-m0 -std=gnu11 -g3 -DUSE_HAL_DRIVER -DSTM32F030x8 -DDEBUG -c -I../Inc -I../Drivers/STM32F0xx_HAL_Driver/Inc -I../Drivers/CMSIS/Include -I"C:/Users/DatBoi/RemoteRacing/firmware/RemoteRacing/Src/FreeRTOS/Source/portable/GCC/ARM_CM0" -I../Drivers/STM32F0xx_HAL_Driver/Inc/Legacy -I../Drivers/CMSIS/Device/ST/STM32F0xx/Include -I"C:/Users/DatBoi/RemoteRacing/firmware/RemoteRacing/Src/FreeRTOS/Source/portable/MemMang" -I"C:/Users/DatBoi/RemoteRacing/firmware/RemoteRacing/Src/FreeRTOS/Source/include" -O0 -ffunction-sections -fdata-sections -Wall -fstack-usage -MMD -MP -MF"Src/LEDs.d" -MT"Src/LEDs.o" --specs=nano.specs -mfloat-abi=soft -mthumb -o "Src/LEDs.o"
-arm-none-eabi-gcc "../Src/MMA8452Q.c" -mcpu=cortex-m0 -std=gnu11 -g3 -DUSE_HAL_DRIVER -DSTM32F030x8 -DDEBUG -c -I../Inc -I../Drivers/STM32F0xx_HAL_Driver/Inc -I../Drivers/CMSIS/Include -I"C:/Users/DatBoi/RemoteRacing/firmware/RemoteRacing/Src/FreeRTOS/Source/portable/GCC/ARM_CM0" -I../Drivers/STM32F0xx_HAL_Driver/Inc/Legacy -I../Drivers/CMSIS/Device/ST/STM32F0xx/Include -I"C:/Users/DatBoi/RemoteRacing/firmware/RemoteRacing/Src/FreeRTOS/Source/portable/MemMang" -I"C:/Users/DatBoi/RemoteRacing/firmware/RemoteRacing/Src/FreeRTOS/Source/include" -O0 -ffunction-sections -fdata-sections -Wall -fstack-usage -MMD -MP -MF"Src/MMA8452Q.d" -MT"Src/MMA8452Q.o" --specs=nano.specs -mfloat-abi=soft -mthumb -o "Src/MMA8452Q.o"
-arm-none-eabi-gcc "../Src/freertos.c" -mcpu=cortex-m0 -std=gnu11 -g3 -DUSE_HAL_DRIVER -DSTM32F030x8 -DDEBUG -c -I../Inc -I../Drivers/STM32F0xx_HAL_Driver/Inc -I../Drivers/CMSIS/Include -I"C:/Users/DatBoi/RemoteRacing/firmware/RemoteRacing/Src/FreeRTOS/Source/portable/GCC/ARM_CM0" -I../Drivers/STM32F0xx_HAL_Driver/Inc/Legacy -I../Drivers/CMSIS/Device/ST/STM32F0xx/Include -I"C:/Users/DatBoi/RemoteRacing/firmware/RemoteRacing/Src/FreeRTOS/Source/portable/MemMang" -I"C:/Users/DatBoi/RemoteRacing/firmware/RemoteRacing/Src/FreeRTOS/Source/include" -O0 -ffunction-sections -fdata-sections -Wall -fstack-usage -MMD -MP -MF"Src/freertos.d" -MT"Src/freertos.o" --specs=nano.specs -mfloat-abi=soft -mthumb -o "Src/freertos.o"
-arm-none-eabi-gcc "../Src/main.c" -mcpu=cortex-m0 -std=gnu11 -g3 -DUSE_HAL_DRIVER -DSTM32F030x8 -DDEBUG -c -I../Inc -I../Drivers/STM32F0xx_HAL_Driver/Inc -I../Drivers/CMSIS/Include -I"C:/Users/DatBoi/RemoteRacing/firmware/RemoteRacing/Src/FreeRTOS/Source/portable/GCC/ARM_CM0" -I../Drivers/STM32F0xx_HAL_Driver/Inc/Legacy -I../Drivers/CMSIS/Device/ST/STM32F0xx/Include -I"C:/Users/DatBoi/RemoteRacing/firmware/RemoteRacing/Src/FreeRTOS/Source/portable/MemMang" -I"C:/Users/DatBoi/RemoteRacing/firmware/RemoteRacing/Src/FreeRTOS/Source/include" -O0 -ffunction-sections -fdata-sections -Wall -fstack-usage -MMD -MP -MF"Src/main.d" -MT"Src/main.o" --specs=nano.specs -mfloat-abi=soft -mthumb -o "Src/main.o"
 arm-none-eabi-gcc "../Src/racing_tasks.c" -mcpu=cortex-m0 -std=gnu11 -g3 -DUSE_HAL_DRIVER -DSTM32F030x8 -DDEBUG -c -I../Inc -I../Drivers/STM32F0xx_HAL_Driver/Inc -I../Drivers/CMSIS/Include -I"C:/Users/DatBoi/RemoteRacing/firmware/RemoteRacing/Src/FreeRTOS/Source/portable/GCC/ARM_CM0" -I../Drivers/STM32F0xx_HAL_Driver/Inc/Legacy -I../Drivers/CMSIS/Device/ST/STM32F0xx/Include -I"C:/Users/DatBoi/RemoteRacing/firmware/RemoteRacing/Src/FreeRTOS/Source/portable/MemMang" -I"C:/Users/DatBoi/RemoteRacing/firmware/RemoteRacing/Src/FreeRTOS/Source/include" -O0 -ffunction-sections -fdata-sections -Wall -fstack-usage -MMD -MP -MF"Src/racing_tasks.d" -MT"Src/racing_tasks.o" --specs=nano.specs -mfloat-abi=soft -mthumb -o "Src/racing_tasks.o"
-arm-none-eabi-gcc "../Src/stm32f0xx_hal_msp.c" -mcpu=cortex-m0 -std=gnu11 -g3 -DUSE_HAL_DRIVER -DSTM32F030x8 -DDEBUG -c -I../Inc -I../Drivers/STM32F0xx_HAL_Driver/Inc -I../Drivers/CMSIS/Include -I"C:/Users/DatBoi/RemoteRacing/firmware/RemoteRacing/Src/FreeRTOS/Source/portable/GCC/ARM_CM0" -I../Drivers/STM32F0xx_HAL_Driver/Inc/Legacy -I../Drivers/CMSIS/Device/ST/STM32F0xx/Include -I"C:/Users/DatBoi/RemoteRacing/firmware/RemoteRacing/Src/FreeRTOS/Source/portable/MemMang" -I"C:/Users/DatBoi/RemoteRacing/firmware/RemoteRacing/Src/FreeRTOS/Source/include" -O0 -ffunction-sections -fdata-sections -Wall -fstack-usage -MMD -MP -MF"Src/stm32f0xx_hal_msp.d" -MT"Src/stm32f0xx_hal_msp.o" --specs=nano.specs -mfloat-abi=soft -mthumb -o "Src/stm32f0xx_hal_msp.o"
-arm-none-eabi-gcc "../Src/stm32f0xx_it.c" -mcpu=cortex-m0 -std=gnu11 -g3 -DUSE_HAL_DRIVER -DSTM32F030x8 -DDEBUG -c -I../Inc -I../Drivers/STM32F0xx_HAL_Driver/Inc -I../Drivers/CMSIS/Include -I"C:/Users/DatBoi/RemoteRacing/firmware/RemoteRacing/Src/FreeRTOS/Source/portable/GCC/ARM_CM0" -I../Drivers/STM32F0xx_HAL_Driver/Inc/Legacy -I../Drivers/CMSIS/Device/ST/STM32F0xx/Include -I"C:/Users/DatBoi/RemoteRacing/firmware/RemoteRacing/Src/FreeRTOS/Source/portable/MemMang" -I"C:/Users/DatBoi/RemoteRacing/firmware/RemoteRacing/Src/FreeRTOS/Source/include" -O0 -ffunction-sections -fdata-sections -Wall -fstack-usage -MMD -MP -MF"Src/stm32f0xx_it.d" -MT"Src/stm32f0xx_it.o" --specs=nano.specs -mfloat-abi=soft -mthumb -o "Src/stm32f0xx_it.o"
-In file included from ../Src/freertos.c:24:0:
-../Inc/main.h:85:0: warning: "LCD_DC_Pin" redefined
- #define LCD_DC_Pin GPIO_PIN_4
- 
-In file included from ../Inc/racing_tasks.h:13:0,
-                 from ../Inc/main.h:35,
-                 from ../Src/freertos.c:24:
-../Inc/LCD.h:18:0: note: this is the location of the previous definition
- #define LCD_DC_Pin GPIO_PIN_5
- 
-In file included from ../Src/freertos.c:24:0:
-../Inc/main.h:86:0: warning: "LCD_DC_GPIO_Port" redefined
- #define LCD_DC_GPIO_Port GPIOC
- 
-In file included from ../Inc/racing_tasks.h:13:0,
-                 from ../Inc/main.h:35,
-                 from ../Src/freertos.c:24:
-../Inc/LCD.h:19:0: note: this is the location of the previous definition
- #define LCD_DC_GPIO_Port GPIOA
- 
-In file included from ../Src/main.c:22:0:
-../Inc/main.h:85:0: warning: "LCD_DC_Pin" redefined
- #define LCD_DC_Pin GPIO_PIN_4
- 
-In file included from ../Inc/racing_tasks.h:13:0,
-                 from ../Inc/main.h:35,
-                 from ../Src/main.c:22:
-../Inc/LCD.h:18:0: note: this is the location of the previous definition
- #define LCD_DC_Pin GPIO_PIN_5
- 
-In file included from ../Src/main.c:22:0:
-../Inc/main.h:86:0: warning: "LCD_DC_GPIO_Port" redefined
- #define LCD_DC_GPIO_Port GPIOC
- 
-In file included from ../Inc/racing_tasks.h:13:0,
-                 from ../Inc/main.h:35,
-                 from ../Src/main.c:22:
-../Inc/LCD.h:19:0: note: this is the location of the previous definition
- #define LCD_DC_GPIO_Port GPIOA
- 
-In file included from ../Inc/LEDs.h:4:0,
-                 from ../Src/LEDs.c:1:
-../Inc/main.h:85:0: warning: "LCD_DC_Pin" redefined
- #define LCD_DC_Pin GPIO_PIN_4
- 
-In file included from ../Inc/racing_tasks.h:13:0,
-                 from ../Inc/main.h:35,
-                 from ../Inc/LEDs.h:4,
-                 from ../Src/LEDs.c:1:
-../Inc/LCD.h:18:0: note: this is the location of the previous definition
- #define LCD_DC_Pin GPIO_PIN_5
- 
-In file included from ../Inc/LEDs.h:4:0,
-                 from ../Src/LEDs.c:1:
-../Inc/main.h:86:0: warning: "LCD_DC_GPIO_Port" redefined
- #define LCD_DC_GPIO_Port GPIOC
- 
-In file included from ../Inc/racing_tasks.h:13:0,
-                 from ../Inc/main.h:35,
-                 from ../Inc/LEDs.h:4,
-                 from ../Src/LEDs.c:1:
-../Inc/LCD.h:19:0: note: this is the location of the previous definition
- #define LCD_DC_GPIO_Port GPIOA
- 
-In file included from ../Src/stm32f0xx_it.c:22:0:
-../Inc/main.h:85:0: warning: "LCD_DC_Pin" redefined
- #define LCD_DC_Pin GPIO_PIN_4
- 
-In file included from ../Inc/racing_tasks.h:13:0,
-                 from ../Inc/main.h:35,
-                 from ../Src/stm32f0xx_it.c:22:
-../Inc/LCD.h:18:0: note: this is the location of the previous definition
- #define LCD_DC_Pin GPIO_PIN_5
- 
-In file included from ../Src/stm32f0xx_it.c:22:0:
-../Inc/main.h:86:0: warning: "LCD_DC_GPIO_Port" redefined
- #define LCD_DC_GPIO_Port GPIOC
- 
-In file included from ../Inc/racing_tasks.h:13:0,
-                 from ../Inc/main.h:35,
-                 from ../Src/stm32f0xx_it.c:22:
-../Inc/LCD.h:19:0: note: this is the location of the previous definition
- #define LCD_DC_GPIO_Port GPIOA
- 
-In file included from ../Src/stm32f0xx_hal_msp.c:23:0:
-../Inc/main.h:85:0: warning: "LCD_DC_Pin" redefined
- #define LCD_DC_Pin GPIO_PIN_4
- 
-In file included from ../Inc/racing_tasks.h:13:0,
-                 from ../Inc/main.h:35,
-                 from ../Src/stm32f0xx_hal_msp.c:23:
-../Inc/LCD.h:18:0: note: this is the location of the previous definition
- #define LCD_DC_Pin GPIO_PIN_5
- 
-In file included from ../Src/stm32f0xx_hal_msp.c:23:0:
-../Inc/main.h:86:0: warning: "LCD_DC_GPIO_Port" redefined
- #define LCD_DC_GPIO_Port GPIOC
- 
-In file included from ../Inc/racing_tasks.h:13:0,
-                 from ../Inc/main.h:35,
-                 from ../Src/stm32f0xx_hal_msp.c:23:
-../Inc/LCD.h:19:0: note: this is the location of the previous definition
- #define LCD_DC_GPIO_Port GPIOA
- 
-In file included from ../Inc/MMA8452Q.h:10:0,
-                 from ../Src/MMA8452Q.c:1:
-../Inc/main.h:85:0: warning: "LCD_DC_Pin" redefined
- #define LCD_DC_Pin GPIO_PIN_4
- 
-In file included from ../Inc/racing_tasks.h:13:0,
-                 from ../Inc/main.h:35,
-                 from ../Inc/MMA8452Q.h:10,
-                 from ../Src/MMA8452Q.c:1:
-../Inc/LCD.h:18:0: note: this is the location of the previous definition
- #define LCD_DC_Pin GPIO_PIN_5
- 
-In file included from ../Inc/MMA8452Q.h:10:0,
-                 from ../Src/MMA8452Q.c:1:
-../Inc/main.h:86:0: warning: "LCD_DC_GPIO_Port" redefined
- #define LCD_DC_GPIO_Port GPIOC
- 
-In file included from ../Inc/racing_tasks.h:13:0,
-                 from ../Inc/main.h:35,
-                 from ../Inc/MMA8452Q.h:10,
-                 from ../Src/MMA8452Q.c:1:
-../Inc/LCD.h:19:0: note: this is the location of the previous definition
- #define LCD_DC_GPIO_Port GPIOA
- 
+../Src/racing_tasks.c: In function 'task_receive_ble_packet':
+../Src/racing_tasks.c:53:8: warning: variable 'race_pos_msg' set but not used [-Wunused-but-set-variable]
+   char race_pos_msg[] = "  th place!";
+        ^~~~~~~~~~~~
+../Src/racing_tasks.c:52:14: warning: unused variable 'race_end_msg' [-Wunused-variable]
+   const char race_end_msg[] = "    race finished!";
+              ^~~~~~~~~~~~
 arm-none-eabi-gcc -o "RemoteRacing.elf" @"objects.list"   -mcpu=cortex-m0 -T"C:\Users\DatBoi\RemoteRacing\firmware\RemoteRacing\STM32F030R8TX_FLASH.ld" --specs=nosys.specs -Wl,-Map="RemoteRacing.map" -Wl,--gc-sections -static --specs=nano.specs -mfloat-abi=soft -mthumb -Wl,--start-group -lc -lm -Wl,--end-group
 Finished building target: RemoteRacing.elf
  
 arm-none-eabi-objdump -h -S  RemoteRacing.elf  > "RemoteRacing.list"
 arm-none-eabi-size   RemoteRacing.elf 
    text	   data	    bss	    dec	    hex	filename
-  25044	     16	   6928	  31988	   7cf4	RemoteRacing.elf
+  29688	     20	   7252	  36960	   9060	RemoteRacing.elf
 Finished building: default.size.stdout
  
 Finished building: RemoteRacing.list
- 
-22:11:28 **** Incremental Build of configuration Debug for project RemoteRacing ****
-make -j8 all 
-arm-none-eabi-size   RemoteRacing.elf 
-   text	   data	    bss	    dec	    hex	filename
-  25044	     16	   6928	  31988	   7cf4	RemoteRacing.elf
-Finished building: default.size.stdout
- 
-22:28:37 **** Incremental Build of configuration Debug for project RemoteRacing ****
-make -j8 all 
-arm-none-eabi-size   RemoteRacing.elf 
-   text	   data	    bss	    dec	    hex	filename
-  25044	     16	   6928	  31988	   7cf4	RemoteRacing.elf
-Finished building: default.size.stdout
  

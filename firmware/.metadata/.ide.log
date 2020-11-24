@@ -5461,3 +5461,11 @@
 2020-11-21 21:51:11,096 [INFO] ProjectBuilder:1461 - Time for Copy CMSIS : 0mS.
 2020-11-21 21:51:11,104 [INFO] ProjectBuilder:1461 - Time for Copy CMSIS : 0mS.
 2020-11-22 14:05:29,442 [INFO] BlockDiagram:1818 - stop enableDisableButtons
+2020-11-22 22:14:02,332 [INFO] Activator:176 - 
+
+
+2020-11-22 22:14:02,335 [INFO] Activator:177 - !SESSION log4j initialized
+2020-11-22 22:18:13,809 [INFO] Activator:176 - 
+
+
+2020-11-22 22:18:13,812 [INFO] Activator:177 - !SESSION log4j initialized

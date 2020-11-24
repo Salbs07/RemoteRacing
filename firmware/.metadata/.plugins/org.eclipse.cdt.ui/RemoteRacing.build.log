@@ -1,10 +1,24 @@
-22:28:37 **** Incremental Build of configuration Debug for project RemoteRacing ****
+19:43:45 **** Incremental Build of configuration Debug for project RemoteRacing ****
 make -j8 all 
+arm-none-eabi-gcc "../Src/racing_tasks.c" -mcpu=cortex-m0 -std=gnu11 -g3 -DUSE_HAL_DRIVER -DSTM32F030x8 -DDEBUG -c -I../Inc -I../Drivers/STM32F0xx_HAL_Driver/Inc -I../Drivers/CMSIS/Include -I"C:/Users/DatBoi/RemoteRacing/firmware/RemoteRacing/Src/FreeRTOS/Source/portable/GCC/ARM_CM0" -I../Drivers/STM32F0xx_HAL_Driver/Inc/Legacy -I../Drivers/CMSIS/Device/ST/STM32F0xx/Include -I"C:/Users/DatBoi/RemoteRacing/firmware/RemoteRacing/Src/FreeRTOS/Source/portable/MemMang" -I"C:/Users/DatBoi/RemoteRacing/firmware/RemoteRacing/Src/FreeRTOS/Source/include" -O0 -ffunction-sections -fdata-sections -Wall -fstack-usage -MMD -MP -MF"Src/racing_tasks.d" -MT"Src/racing_tasks.o" --specs=nano.specs -mfloat-abi=soft -mthumb -o "Src/racing_tasks.o"
+../Src/racing_tasks.c: In function 'task_receive_ble_packet':
+../Src/racing_tasks.c:53:8: warning: variable 'race_pos_msg' set but not used [-Wunused-but-set-variable]
+   char race_pos_msg[] = "  th place!";
+        ^~~~~~~~~~~~
+../Src/racing_tasks.c:52:14: warning: unused variable 'race_end_msg' [-Wunused-variable]
+   const char race_end_msg[] = "    race finished!";
+              ^~~~~~~~~~~~
+arm-none-eabi-gcc -o "RemoteRacing.elf" @"objects.list"   -mcpu=cortex-m0 -T"C:\Users\DatBoi\RemoteRacing\firmware\RemoteRacing\STM32F030R8TX_FLASH.ld" --specs=nosys.specs -Wl,-Map="RemoteRacing.map" -Wl,--gc-sections -static --specs=nano.specs -mfloat-abi=soft -mthumb -Wl,--start-group -lc -lm -Wl,--end-group
+Finished building target: RemoteRacing.elf
+ 
+arm-none-eabi-objdump -h -S  RemoteRacing.elf  > "RemoteRacing.list"
 arm-none-eabi-size   RemoteRacing.elf 
    text	   data	    bss	    dec	    hex	filename
-  25044	     16	   6928	  31988	   7cf4	RemoteRacing.elf
+  29688	     20	   7252	  36960	   9060	RemoteRacing.elf
 Finished building: default.size.stdout
  
+Finished building: RemoteRacing.list
+ 
 
-22:28:39 Build Finished. 0 errors, 0 warnings. (took 1s.260ms)
+19:43:47 Build Finished. 0 errors, 2 warnings. (took 2s.530ms)
 

@@ -29,4 +29,16 @@ void task_receive_ble_packet();
 ble_data_packet_tx_t ble_tx_packet;
 extern uint8_t txBuffer[GPS_TX_BUFFER_SIZE];
 
+typedef struct racer{
+	char name[19];
+	char is_you;
+} racer_t;
+
+char POSITION[3];
+uint8_t DIST_FRACTION_SIZE;
+char DIST_FRACTION[20];
+racer_t RACERS[6];
+float START_TIME;
+float FINISH_TIME;
+
 #endif

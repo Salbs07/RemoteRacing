@@ -1,0 +1,2 @@
+LEDs.c:3:6:toggleLED	8	static
+LEDs.c:20:6:setLED	8	static

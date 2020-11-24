@@ -28,22 +28,22 @@ Src/racing_tasks.o: ../Src/racing_tasks.c ../Inc/racing_tasks.h \
  ../Drivers/STM32F0xx_HAL_Driver/Inc/stm32f0xx_hal_uart.h \
  ../Drivers/STM32F0xx_HAL_Driver/Inc/stm32f0xx_hal_uart_ex.h \
  ../Inc/racing_tasks.h \
- C:/Users/Sanosu/STM32CubeIDE/workspace_1.3.0/RemoteRacing/Src/FreeRTOS/Source/include/FreeRTOS.h \
+ C:/Users/DatBoi/RemoteRacing/firmware/RemoteRacing/Src/FreeRTOS/Source/include/FreeRTOS.h \
  ../Inc/FreeRTOSConfig.h \
- C:/Users/Sanosu/STM32CubeIDE/workspace_1.3.0/RemoteRacing/Src/FreeRTOS/Source/include/projdefs.h \
- C:/Users/Sanosu/STM32CubeIDE/workspace_1.3.0/RemoteRacing/Src/FreeRTOS/Source/include/portable.h \
- C:/Users/Sanosu/STM32CubeIDE/workspace_1.3.0/RemoteRacing/Src/FreeRTOS/Source/include/deprecated_definitions.h \
- C:/Users/Sanosu/STM32CubeIDE/workspace_1.3.0/RemoteRacing/Src/FreeRTOS/Source/portable/GCC/ARM_CM0/portmacro.h \
- C:/Users/Sanosu/STM32CubeIDE/workspace_1.3.0/RemoteRacing/Src/FreeRTOS/Source/include/mpu_wrappers.h \
- C:/Users/Sanosu/STM32CubeIDE/workspace_1.3.0/RemoteRacing/Src/FreeRTOS/Source/include/task.h \
- C:/Users/Sanosu/STM32CubeIDE/workspace_1.3.0/RemoteRacing/Src/FreeRTOS/Source/include/list.h \
- C:/Users/Sanosu/STM32CubeIDE/workspace_1.3.0/RemoteRacing/Src/FreeRTOS/Source/include/timers.h \
- C:/Users/Sanosu/STM32CubeIDE/workspace_1.3.0/RemoteRacing/Src/FreeRTOS/Source/include/task.h \
- C:/Users/Sanosu/STM32CubeIDE/workspace_1.3.0/RemoteRacing/Src/FreeRTOS/Source/include/queue.h \
- C:/Users/Sanosu/STM32CubeIDE/workspace_1.3.0/RemoteRacing/Src/FreeRTOS/Source/include/semphr.h \
- C:/Users/Sanosu/STM32CubeIDE/workspace_1.3.0/RemoteRacing/Src/FreeRTOS/Source/include/queue.h \
- C:/Users/Sanosu/STM32CubeIDE/workspace_1.3.0/RemoteRacing/Src/FreeRTOS/Source/include/event_groups.h \
- C:/Users/Sanosu/STM32CubeIDE/workspace_1.3.0/RemoteRacing/Src/FreeRTOS/Source/include/timers.h \
+ C:/Users/DatBoi/RemoteRacing/firmware/RemoteRacing/Src/FreeRTOS/Source/include/projdefs.h \
+ C:/Users/DatBoi/RemoteRacing/firmware/RemoteRacing/Src/FreeRTOS/Source/include/portable.h \
+ C:/Users/DatBoi/RemoteRacing/firmware/RemoteRacing/Src/FreeRTOS/Source/include/deprecated_definitions.h \
+ C:/Users/DatBoi/RemoteRacing/firmware/RemoteRacing/Src/FreeRTOS/Source/portable/GCC/ARM_CM0/portmacro.h \
+ C:/Users/DatBoi/RemoteRacing/firmware/RemoteRacing/Src/FreeRTOS/Source/include/mpu_wrappers.h \
+ C:/Users/DatBoi/RemoteRacing/firmware/RemoteRacing/Src/FreeRTOS/Source/include/task.h \
+ C:/Users/DatBoi/RemoteRacing/firmware/RemoteRacing/Src/FreeRTOS/Source/include/list.h \
+ C:/Users/DatBoi/RemoteRacing/firmware/RemoteRacing/Src/FreeRTOS/Source/include/timers.h \
+ C:/Users/DatBoi/RemoteRacing/firmware/RemoteRacing/Src/FreeRTOS/Source/include/task.h \
+ C:/Users/DatBoi/RemoteRacing/firmware/RemoteRacing/Src/FreeRTOS/Source/include/queue.h \
+ C:/Users/DatBoi/RemoteRacing/firmware/RemoteRacing/Src/FreeRTOS/Source/include/semphr.h \
+ C:/Users/DatBoi/RemoteRacing/firmware/RemoteRacing/Src/FreeRTOS/Source/include/queue.h \
+ C:/Users/DatBoi/RemoteRacing/firmware/RemoteRacing/Src/FreeRTOS/Source/include/event_groups.h \
+ C:/Users/DatBoi/RemoteRacing/firmware/RemoteRacing/Src/FreeRTOS/Source/include/timers.h \
  ../Inc/MMA8452Q.h ../Inc/LEDs.h ../Inc/main.h ../Inc/LCD.h ../Inc/GPS.h \
  ../Inc/BLE.h
 
@@ -109,37 +109,37 @@ Src/racing_tasks.o: ../Src/racing_tasks.c ../Inc/racing_tasks.h \
 
 ../Inc/racing_tasks.h:
 
-C:/Users/Sanosu/STM32CubeIDE/workspace_1.3.0/RemoteRacing/Src/FreeRTOS/Source/include/FreeRTOS.h:
+C:/Users/DatBoi/RemoteRacing/firmware/RemoteRacing/Src/FreeRTOS/Source/include/FreeRTOS.h:
 
 ../Inc/FreeRTOSConfig.h:
 
-C:/Users/Sanosu/STM32CubeIDE/workspace_1.3.0/RemoteRacing/Src/FreeRTOS/Source/include/projdefs.h:
+C:/Users/DatBoi/RemoteRacing/firmware/RemoteRacing/Src/FreeRTOS/Source/include/projdefs.h:
 
-C:/Users/Sanosu/STM32CubeIDE/workspace_1.3.0/RemoteRacing/Src/FreeRTOS/Source/include/portable.h:
+C:/Users/DatBoi/RemoteRacing/firmware/RemoteRacing/Src/FreeRTOS/Source/include/portable.h:
 
-C:/Users/Sanosu/STM32CubeIDE/workspace_1.3.0/RemoteRacing/Src/FreeRTOS/Source/include/deprecated_definitions.h:
+C:/Users/DatBoi/RemoteRacing/firmware/RemoteRacing/Src/FreeRTOS/Source/include/deprecated_definitions.h:
 
-C:/Users/Sanosu/STM32CubeIDE/workspace_1.3.0/RemoteRacing/Src/FreeRTOS/Source/portable/GCC/ARM_CM0/portmacro.h:
+C:/Users/DatBoi/RemoteRacing/firmware/RemoteRacing/Src/FreeRTOS/Source/portable/GCC/ARM_CM0/portmacro.h:
 
-C:/Users/Sanosu/STM32CubeIDE/workspace_1.3.0/RemoteRacing/Src/FreeRTOS/Source/include/mpu_wrappers.h:
+C:/Users/DatBoi/RemoteRacing/firmware/RemoteRacing/Src/FreeRTOS/Source/include/mpu_wrappers.h:
 
-C:/Users/Sanosu/STM32CubeIDE/workspace_1.3.0/RemoteRacing/Src/FreeRTOS/Source/include/task.h:
+C:/Users/DatBoi/RemoteRacing/firmware/RemoteRacing/Src/FreeRTOS/Source/include/task.h:
 
-C:/Users/Sanosu/STM32CubeIDE/workspace_1.3.0/RemoteRacing/Src/FreeRTOS/Source/include/list.h:
+C:/Users/DatBoi/RemoteRacing/firmware/RemoteRacing/Src/FreeRTOS/Source/include/list.h:
 
-C:/Users/Sanosu/STM32CubeIDE/workspace_1.3.0/RemoteRacing/Src/FreeRTOS/Source/include/timers.h:
+C:/Users/DatBoi/RemoteRacing/firmware/RemoteRacing/Src/FreeRTOS/Source/include/timers.h:
 
-C:/Users/Sanosu/STM32CubeIDE/workspace_1.3.0/RemoteRacing/Src/FreeRTOS/Source/include/task.h:
+C:/Users/DatBoi/RemoteRacing/firmware/RemoteRacing/Src/FreeRTOS/Source/include/task.h:
 
-C:/Users/Sanosu/STM32CubeIDE/workspace_1.3.0/RemoteRacing/Src/FreeRTOS/Source/include/queue.h:
+C:/Users/DatBoi/RemoteRacing/firmware/RemoteRacing/Src/FreeRTOS/Source/include/queue.h:
 
-C:/Users/Sanosu/STM32CubeIDE/workspace_1.3.0/RemoteRacing/Src/FreeRTOS/Source/include/semphr.h:
+C:/Users/DatBoi/RemoteRacing/firmware/RemoteRacing/Src/FreeRTOS/Source/include/semphr.h:
 
-C:/Users/Sanosu/STM32CubeIDE/workspace_1.3.0/RemoteRacing/Src/FreeRTOS/Source/include/queue.h:
+C:/Users/DatBoi/RemoteRacing/firmware/RemoteRacing/Src/FreeRTOS/Source/include/queue.h:
 
-C:/Users/Sanosu/STM32CubeIDE/workspace_1.3.0/RemoteRacing/Src/FreeRTOS/Source/include/event_groups.h:
+C:/Users/DatBoi/RemoteRacing/firmware/RemoteRacing/Src/FreeRTOS/Source/include/event_groups.h:
 
-C:/Users/Sanosu/STM32CubeIDE/workspace_1.3.0/RemoteRacing/Src/FreeRTOS/Source/include/timers.h:
+C:/Users/DatBoi/RemoteRacing/firmware/RemoteRacing/Src/FreeRTOS/Source/include/timers.h:
 
 ../Inc/MMA8452Q.h:
 

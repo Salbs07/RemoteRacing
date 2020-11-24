@@ -44,36 +44,131 @@ void task_send_ble_packet() {
 }
 void task_receive_ble_packet() {
 	for(;;) {
-		if( xSemaphoreTake(ble_receive_ready, portMAX_DELAY) == pdTRUE ) {
-		//xSemaphoreTake(ble_receive_ready, portMAX_DELAY);
-		switch((uint8_t)RX_BUFFER.command - 64) {
+//		if( xSemaphoreTake(ble_receive_ready, portMAX_DELAY) == pdTRUE ) {
+		xSemaphoreTake(ble_receive_ready, portMAX_DELAY);
+
+		uint8_t index = 0;
+		uint8_t position;
+		const char race_end_msg[] = "    race finished!";
+		char race_pos_msg[] = "  th place!";
+
+		switch((uint8_t)RX_BUFFER.command) {
 		case GPS_RIP_2020NOV:
 			// display messsage that the GPS has moved onto the next life
-			 fillScreen(ILI9341_LIGHTGREY);
+			fillScreen(ILI9341_LIGHTGREY);
 			break;
+
 		case IDLE:
 			// "use the app to start a race"
 			 fillScreen(ILI9341_BLACK);
 			break;
+
 		case RACE_START:
 			// "put phone down, race starting soon"
 			// LED countdown
 			// "plz dont die"
 			break;
+
 		case POS_UPDATE:
-			// current driver position on screen
-			// x miles/ total amnt of miles
+			// Packet Format:
+			//	command: 	'U'
+			// 	data:		<3 char array position, ie '1st', '2nd', '3rd'...> <length of next string (as an int)> <char array containing fraction, ie "3.3 /4.0"> <padding characters>
+			memcpy(&POSITION, RX_BUFFER.command_data, 3);
+			memcpy(&DIST_FRACTION_SIZE, RX_BUFFER.command_data + 3, 1);
+			memcpy(&DIST_FRACTION, RX_BUFFER.command_data + 4, DIST_FRACTION_SIZE);
+
+			// Print to LCD:
+			//	"Pos: <POSITION>"
+			//	"<DIST_FRACTION> miles"
 			break;
+
 		case RACE_END:
-			// "Finish!"
-			// driver time
+			// Packet Format:
+			//	command: 	'_'
+			// 	data:		position in first byte
+
+			// print finished on LCD
+
+			// print time finished on LCD
+			// get time from GPS data
+//			FINISH_TIME = gps_get_time();
+
+			position = RX_BUFFER.command_data[0];
+
+			// constructs position message
+			if(position % 10 == 1 && position != 11) {
+				race_pos_msg[2] = 's';
+				race_pos_msg[3] = 't';
+			}
+			else if(position % 10 == 2 && position != 12) {
+				race_pos_msg[2] = 'n';
+				race_pos_msg[3] = 'd';
+			}
+			else if(position % 10 == 3 && position != 13) {
+				race_pos_msg[2] = 'r';
+				race_pos_msg[3] = 'd';
+			}
+
+			if(position > 9) {
+				race_pos_msg[0] = position/10 + '0';
+				position %= 10;
+			}
+			race_pos_msg[1] = position + '0';
+
+			// print position to LCD
+
 			break;
 		case RACE_END_ALL:
 			// Positions of each racer
+
+			// Packet Format:
+			//	command: 	''
+			// 	data:		6x: 19 character name + 1 character bool
+			while (RX_BUFFER.command_data[index] && index < 120){
+				// copy the names
+				memcpy(&RACERS[index/20].name, RX_BUFFER.command_data + index, 19);
+				memcpy(&RACERS[index/20].is_you, RX_BUFFER.command_data + index + 19, 1);
+				index += 20;
+			}
+
+			// print the names and positions
+
 			break;
 		default:
 			break;
 		}
 	}
-	}
+}
+
+// returns the current time in the format of a floating point number HHMMSS.SSS
+float gps_get_time() {
+    uint8_t * gps_data = ble_tx_packet.gps_data;
+
+    int index = 0;
+
+    // GPS messages must start with GPRMC
+    if(gps_data[index + 1] != 'G' || (gps_data[index + 2] != 'P' && gps_data[index + 2] != 'N') || gps_data[index + 3] != 'R' || gps_data[index + 4] != 'M' || gps_data[index + 5] != 'C')
+        return 0;
+
+    // 7 is the index of the start of the time part of the GPS message
+    index += 7;
+
+    float current_time = 0;
+
+    for(; index < GPS_MAX_COMMAND_LENGTH && gps_data[index] != '.'; index++) {
+        current_time *= 10;
+        current_time += gps_data[index] - '0';
+    }
+
+    index++;    // skipping the decimal point in the message to continue to parse the number
+
+    // GPS returns time to thousandths of a second
+    float microseconds = 0;
+    for(; index < GPS_MAX_COMMAND_LENGTH && gps_data[index] != ','; index++) {
+        microseconds *= 10;
+        microseconds += gps_data[index] - '0';
+    }
+    microseconds /= 1000;
+
+    return current_time + microseconds;
 }

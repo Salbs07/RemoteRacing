@@ -1,0 +1,2 @@
+BLE.c:3:6:ble_init	8	static
+BLE.c:7:6:ble_send	8	static
