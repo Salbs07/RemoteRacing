@@ -164,10 +164,30 @@ float gps_get_time() {
     uint8_t * gps_data = ble_tx_packet.gps_data;
 
     // GPS messages must start with GPRMC
-    if(gps_data[1] != 'G' || (gps_data[2] != 'P' && gps_data[2] != 'N') || gps_data[3] != 'R' || gps_data[4] != 'M' || gps_data[5] != 'C')
+    if(gps_data[index + 1] != 'G' || (gps_data[index + 2] != 'P' && gps_data[index + 2] != 'N') || gps_data[index + 3] != 'R' || gps_data[index + 4] != 'M' || gps_data[index + 5] != 'C')
         return 0;
 
-    return convert_time(gps_data + 7);
+    // 7 is the index of the start of the time part of the GPS message
+    index += 7;
+
+    float current_time = 0;
+
+    for(; index < GPS_MAX_COMMAND_LENGTH && gps_data[index] != '.'; index++) {
+        current_time *= 10;
+        current_time += gps_data[index] - '0';
+    }
+
+    index++;    // skipping the decimal point in the message to continue to parse the number
+
+    // GPS returns time to thousandths of a second
+    float microseconds = 0;
+    for(; index < GPS_MAX_COMMAND_LENGTH && gps_data[index] != ','; index++) {
+        microseconds *= 10;
+        microseconds += gps_data[index] - '0';
+    }
+    microseconds /= 1000;
+
+    return current_time + microseconds;
 }
 
 // converts a uint8_t array in the format HHMMSS.SS to a float of the same format
