@@ -2,25 +2,63 @@
 
 /**************************************************************************/
 /*
-		INSTRUCTIONS FOR SETUP
+		STATE FUNCTIONS
 */
 /**************************************************************************/
-// TODO:
-// 1) follow pinout on the PCB - the code has been changed to take into account
-//		the pinout change.
-// 2) instantiate LCD_CS, LCD_RD, and LCD_WR with GPIO output level == high
 
-/*
-    //Example use:
 
-	char greeting[] = "Hello!";
-	...
-  	LCD_Init();
-    	fillScreen(ILI9341_OLIVE);
-    	// LCD_draw_text erases all text on screen (if any)
-	LCD_draw_text(greeting, 7, 0, 0, 6, ILI9341_BLACK);
- */
+  void print_gps_rip() {
+	  char t[] = "\n\n GPS location\n  lock  not\n    found";
+	  LCD_draw_text(t, strlen(t), 0, 0, 4, ILI9341_BLACK);
+  }
+  void print_idle() {
+	  char t[] = "\n\n Use the app\n to start a\n  new  race";
+	  LCD_draw_text(t, strlen(t), 0, 0, 4, ILI9341_BLACK);
+  }
+  void print_race_start() {
+	  char t[] = "\n\n  Put phone\n down, race\n starts soon";
+	  LCD_draw_text(t, strlen(t), 0, 0, 4, ILI9341_BLACK);
+  }
+  // receives new position in race and updated traveled distance
+  void print_pos_update_init(char* position, char* miles) {
+	  update_pos = *position;
+	  strcpy(update_dist, miles);
+	  LCD_draw_text("\n\n Position: ", strlen("\n\n Position: "), 0, 0, 4, ILI9341_BLACK);
+	  LCD_draw_text_helper(position, strlen(position), cursor_x, cursor_y, 4, ILI9341_BLACK);
+	  LCD_draw_text("\n\n ", strlen("\n\n "), cursor_x, cursor_y, 4, ILI9341_BLACK);
+	  LCD_draw_text_helper(miles, strlen(miles), cursor_x, cursor_y, 4, ILI9341_BLACK);
+	  LCD_draw_text_helper(" miles", strlen(" miles"), cursor_x, cursor_y, 4, ILI9341_BLACK);
+  }
+  void print_pos_update(char* position, char* miles) {
+	  LCD_draw_text_helper(&update_pos, 1, 264, 64, 4, ILI9341_WHITE);
+	  LCD_draw_text_helper(update_dist, strlen(update_dist), 24, 128, 4, ILI9341_WHITE);
+	  update_pos = *position;
+	  strcpy(update_dist, miles);
+	  LCD_draw_text_helper(position, strlen(position), 264, 64, 4, ILI9341_BLACK);
+	  LCD_draw_text_helper(miles, strlen(miles), 24, 128, 4, ILI9341_BLACK);
+  }
+  // prints "finish!" as well as the driver's finishing time
+  void print_race_end(char* time) {
+	  char finish[] = "\n\n\n   FINISH!";
+	  char time_result[] = "\n\n\n Finishing time:\n  ";
+	  LCD_draw_text("\n\n Position: ", strlen("\n\n Position: "), 0, 0, 4, ILI9341_WHITE);
+	  LCD_draw_text_helper(&update_pos, 1, 264, 64, 4, ILI9341_WHITE);
+	  LCD_draw_text_helper(update_dist, strlen(update_dist), 24, 128, 4, ILI9341_WHITE);
+	  LCD_draw_text(" miles", strlen(" miles"), 144, 128, 4, ILI9341_WHITE);
 
+	  LCD_draw_text(finish, strlen(finish), 0, 0, 4, ILI9341_RED);
+	  LCD_draw_text(time_result, strlen(time_result), 0, 0, 3, ILI9341_BLACK);
+	  LCD_draw_text_helper(time, strlen(time), cursor_x, cursor_y, 4, ILI9341_BLACK);
+	  strcpy(update_time, time);
+
+  }
+  // prints all
+  void print_race_end_all(char* results) {
+	  char time_result[] = "\n\n\n Finishing time:\n  ";
+	  LCD_draw_text(time_result, strlen(time_result), 0, 0, 3, ILI9341_WHITE);
+	  LCD_draw_text_helper(update_time, strlen(update_time), cursor_x, cursor_y, 4, ILI9341_WHITE);
+
+  }
 
 /**************************************************************************/
 /*
@@ -46,7 +84,7 @@ void LCD_Init(void) {
 	  textcolor = textbgcolor = bgcolor = 0xFFFF;
 	  wrap = 1;
 	  _cp437 = 0;
-	  text = NULL;
+	  memset(text, '\0', sizeof(text));
 	  textlength = 0;
 
 	    // Resets the LCD
@@ -64,7 +102,7 @@ void LCD_Init(void) {
 	    }
 
 	    // sets the screen to display text in landscape mode
-	 	 setRotation(1);
+	 	setRotation(1);
 
 }
 
@@ -147,10 +185,10 @@ void fillRect(int16_t x, int16_t y, int16_t w, int16_t h, uint16_t color) {
 /**************************************************************************/
 void LCD_draw_text(char* buffer, uint8_t len, uint16_t x, uint16_t y,
 		uint8_t s, uint16_t color) {
-	erase();
+	if (text[0] != '\0')
+		LCD_draw_text_helper(text, textlength, 0, 0, textsize_x, bgcolor);
 	LCD_draw_text_helper(buffer, len, x ,y, s, color);
 }
-
 
 /**************************************************************************/
 /*
@@ -530,11 +568,10 @@ size_t write(uint8_t c) {
 }
 
 /*
-    @brief  Erases all text on screen
+    @brief  Erases some text on screen
 */
 void erase(void) {
-	if (text)
-		LCD_draw_text_helper(text, textlength, 0, 0, textsize_x, bgcolor);
+	fillRect(20, 50, 290, cursor_y, ILI9341_WHITE);
 }
 
 void LCD_draw_text_helper(char* buffer, uint8_t len, uint16_t x, uint16_t y,
@@ -543,12 +580,13 @@ void LCD_draw_text_helper(char* buffer, uint8_t len, uint16_t x, uint16_t y,
 	setTextSize(s);
 	setTextColor(color);
 	setCursor(x, y);
-	text = buffer;
+	strcpy(text, buffer);
 	textlength = len;
 	for (i = 0; i < len; i++) {
 		write(*(buffer + i));
 	}
 }
+
 
 // This library is heavily based on the Adafruit_ILI9341 and GFX library
 // Adafruit_ILI9341: 	https://github.com/adafruit/Adafruit_ILI9341
