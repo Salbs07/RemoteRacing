@@ -158,8 +158,10 @@
   void print_gps_rip();
   // prints idle message
   void print_idle();
-  // receives total distance to travel
+  // prints starting text
   void print_race_start();
+  // prints "RACE!"
+  void print_race_start_start();
   // writes the unchanging text in the update phase (i.e. "Position: ...")
   void print_pos_update_init(char* position, char* miles);
   // updates the position and traveled distance
