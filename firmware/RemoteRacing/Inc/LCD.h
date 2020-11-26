@@ -142,9 +142,32 @@
   uint8_t rotation;     ///< Display rotation (0 thru 3)
   unsigned char wrap;            ///< If set, 'wrap' text at right edge of display
   unsigned char _cp437;          ///< If set, use correct CP437 charset (default is off
-  char *text;			///< previous text written to the screen
+  char text[60];			///< previous text written to the screen
   uint8_t textlength;	///< the length of the text written to the screen
+  char update_pos;				///< previous position written to the screen
+  char update_dist[20];		///< previous distance traveled written to the screen
+  char update_time[20];		///< previous distance traveled written to the screen
 
+/**************************************************************************/
+/*
+    STATE FUNCTIONS
+*/
+/**************************************************************************/
+
+  // prints the error message
+  void print_gps_rip();
+  // prints idle message
+  void print_idle();
+  // receives total distance to travel
+  void print_race_start();
+  // writes the unchanging text in the update phase (i.e. "Position: ...")
+  void print_pos_update_init(char* position, char* miles);
+  // updates the position and traveled distance
+  void print_pos_update(char* position, char* miles);
+  // prints "finish!" as well as the driver's finishing time
+  void print_race_end(char* time);
+  // prints all
+  void print_race_end_all(char* results);
 
 /**************************************************************************/
 /*
@@ -156,6 +179,7 @@
   void fillRect(int16_t x, int16_t y, int16_t w, int16_t h, uint16_t color);
   void LCD_draw_text (char* buffer, uint8_t len, uint16_t x, uint16_t y,
   		uint8_t s, uint16_t color);
+  void LCD_draw_text_state(char* buffer, uint8_t len, uint16_t x, uint16_t y);
 
 /**************************************************************************/
 /*
@@ -184,6 +208,7 @@ size_t write(uint8_t c);
 void erase(void);
 void LCD_draw_text_helper(char* buffer, uint8_t len, uint16_t x, uint16_t y,
 		uint8_t s, uint16_t color);
+void LCD_draw_text_helper_state(char* buffer, uint8_t len, uint16_t x, uint16_t y);
 
 /**************************************************************************/
 /*
@@ -348,6 +373,6 @@ static const unsigned char font[] = {
 
 // This library is heavily based on the Adafruit_ILI9341 and GFX library
 // Adafruit_ILI9341: 	https://github.com/adafruit/Adafruit_ILI9341
-// GFX: 				https://github.com/adafruit/Adafruit-GFX-Library
+// GFX: 		https://github.com/adafruit/Adafruit-GFX-Library
 
 #endif /* INC_LCD_H_ */
