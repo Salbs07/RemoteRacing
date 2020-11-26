@@ -19,6 +19,10 @@
 	  char t[] = "\n\n  Put phone\n down, race\n starts soon";
 	  LCD_draw_text(t, strlen(t), 0, 0, 4, ILI9341_BLACK);
   }
+  void print_race_start_start() {
+	  char t[] = "\n\n\n   RACE!";
+	  LCD_draw_text(t, strlen(t), 0, 0, 4, ILI9341_BLACK);
+  }
   // receives new position in race and updated traveled distance
   void print_pos_update_init(char* position, char* miles) {
 	  update_pos = *position;
