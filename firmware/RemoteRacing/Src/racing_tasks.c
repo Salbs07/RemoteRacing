@@ -193,3 +193,44 @@ float convert_time(uint8_t * time_in) {
 	return time + milliseconds;
 }
 
+/* LCD FUNCTIONS - located here as the racer struct was not easily accessed through LCD.h*/
+// prints the results of the race. The user is in red text.
+void print_race_end_all(racer_t* racers, uint8_t num_racers) {
+	  uint8_t i;
+	  char results[] = "   RESULTS";
+	  char space[] = "\n ";
+	  lastcase = 3;
+	  num_racer_results = num_racers;
+	  erase_end();
+
+	  LCD_draw_text_helper(results, strlen(results), 0, 0, 4, ILI9341_BLACK);
+	  //LCD_draw_text_helper(space, strlen(space), cursor_x, cursor_y, 4, ILI9341_BLACK);
+	  for (i = 0; i < num_racers; i++) {
+		  char place[] = {i + 49 , ' '};
+		  LCD_draw_text_helper(space, strlen(space), cursor_x, cursor_y, 3, ILI9341_BLACK);
+		  RESULTS[i] = racers[i];
+		  if ((racers + i)->is_you) {
+			  LCD_draw_text_helper(place, 2, cursor_x, cursor_y, 3, ILI9341_RED);
+			  LCD_draw_text_helper(racers[i].name, strlen(racers[i].name), cursor_x, cursor_y, 3, ILI9341_RED);
+		  }
+		  else {
+			  LCD_draw_text_helper(place, 2, cursor_x, cursor_y, 3, ILI9341_BLACK);
+			  LCD_draw_text_helper(racers[i].name, strlen(racers[i].name), cursor_x, cursor_y, 3, ILI9341_BLACK);
+		  }
+	  }
+}
+// IT IS NOT NECESSARY TO CALL THIS FUNCTION - text is already taken care of.
+void erase_end_all(void) {
+	  uint8_t i;
+	  char results[] = "   RESULTS";
+	  char space[] = "\n ";
+	  lastcase = 3;
+	  LCD_draw_text_helper(results, strlen(results), 0, 0, 4, ILI9341_WHITE);
+	  for (i = 0; i < num_racer_results; i++) {
+		  char place[] = {i + 49 , ' '};
+		  LCD_draw_text_helper(space, strlen(space), cursor_x, cursor_y, 3, ILI9341_WHITE);
+		  LCD_draw_text_helper(place, 2, cursor_x, cursor_y, 3, ILI9341_WHITE);
+		  LCD_draw_text_helper(RESULTS[i].name, strlen(RESULTS[i].name), cursor_x, cursor_y, 3, ILI9341_WHITE);
+	  }
+}
+
