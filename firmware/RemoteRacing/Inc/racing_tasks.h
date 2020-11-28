@@ -36,6 +36,9 @@ typedef struct racer{
 	char is_you;
 } racer_t;
 
+void print_race_end_all(racer_t* racers, uint8_t num_racers);
+racer_t RESULTS[6];
+
 char POSITION[3];
 uint8_t DIST_FRACTION_SIZE;
 char DIST_FRACTION[20];
