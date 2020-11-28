@@ -46,7 +46,7 @@ void setup()
 
   Bluefruit.begin();
   Bluefruit.setTxPower(4);    // Check bluefruit.h for supported values
-  Bluefruit.setName("Bluefruit52");
+  Bluefruit.setName("RemoteRacer");
   //Bluefruit.setName(getMcuUniqueID()); // useful testing with multiple central connections
   Bluefruit.Periph.setConnectCallback(connect_callback);
   Bluefruit.Periph.setDisconnectCallback(disconnect_callback);
@@ -139,8 +139,8 @@ void connect_callback(uint16_t conn_handle)
   char central_name[32] = { 0 };
   connection->getPeerName(central_name, sizeof(central_name));
 
-  Serial1.print("Connected to ");
-  Serial1.println(central_name);
+  // Serial1.print("Connected to ");
+  // Serial1.println(central_name);
 }
 
 /**
@@ -153,6 +153,6 @@ void disconnect_callback(uint16_t conn_handle, uint8_t reason)
   (void) conn_handle;
   (void) reason;
 
-  Serial1.println();
-  Serial1.print("Disconnected, reason = 0x"); Serial1.println(reason, HEX);
+  // Serial1.println();
+  // Serial1.print("Disconnected, reason = 0x"); Serial1.println(reason, HEX);
 }
