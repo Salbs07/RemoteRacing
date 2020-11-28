@@ -6,8 +6,8 @@ void RTOS_INIT() {
 }
 
 void RTOS_INIT_TASKS() {
-	xTaskCreate(task_send_ble_packet, "send_ble_packet", 256, NULL, 0, task_send_ble_packet_handle);
-	xTaskCreate(task_receive_ble_packet, "receive_ble_packet", 256, NULL, 1, task_receive_ble_packet_handle);
+	xTaskCreate(task_send_ble_packet, "send_ble_packet", 256, NULL, 1, task_send_ble_packet_handle);
+	xTaskCreate(task_receive_ble_packet, "receive_ble_packet", 256, NULL, 0, task_receive_ble_packet_handle);
 }
 
 void task_send_ble_packet() {
@@ -48,6 +48,7 @@ void task_receive_ble_packet() {
 		xSemaphoreTake(ble_receive_ready, portMAX_DELAY);
 
 		uint8_t index = 0, position;
+		uint8_t count = 0;
 		const char race_end_msg[] = "    race finished!";
 		char race_pos_msg[] = "  th place!";
 		float current_time, time_to_wait;
@@ -55,12 +56,12 @@ void task_receive_ble_packet() {
 		switch((uint8_t)RX_BUFFER.command) {
 		case GPS_RIP_2020NOV:
 			// display messsage that the GPS has moved onto the next life
-			fillScreen(ILI9341_LIGHTGREY);
+			print_gps_rip();
 			break;
 
 		case IDLE:
 			// "use the app to start a race"
-			 fillScreen(ILI9341_BLACK);
+			print_idle();
 			break;
 
 		case RACE_START:
@@ -74,6 +75,7 @@ void task_receive_ble_packet() {
 			//print_function();
 
 			// LED countdown
+			print_race_start();
 			current_time = gps_get_time();
 			time_to_wait = START_TIME - current_time - 2;
 			vTaskDelay((int) 1000*time_to_wait);
@@ -91,10 +93,11 @@ void task_receive_ble_packet() {
 			// Packet Format:
 			//	command: 	'U'
 			// 	data:		<3 char array position, ie '1st', '2nd', '3rd'...> <length of next string (as an int)> <char array containing fraction, ie "3.3 / 4.0"> <padding characters>
-			memcpy(&POSITION, RX_BUFFER.command_data, 3);
+			memcpy(POSITION, RX_BUFFER.command_data, 3);
 			memcpy(&DIST_FRACTION_SIZE, RX_BUFFER.command_data + 3, 1);
-			memcpy(&DIST_FRACTION, RX_BUFFER.command_data + 4, DIST_FRACTION_SIZE);
+			memcpy(DIST_FRACTION, RX_BUFFER.command_data + 4, DIST_FRACTION_SIZE);
 
+			print_pos_update_init(POSITION, DIST_FRACTION);
 			// Print to LCD:
 			//	"Pos: <POSITION>"
 			//	"<DIST_FRACTION> miles"
@@ -133,6 +136,7 @@ void task_receive_ble_packet() {
 			}
 			race_pos_msg[1] = position + '0';
 
+			print_race_end(race_pos_msg);
 			// print position to LCD
 
 			break;
@@ -143,12 +147,14 @@ void task_receive_ble_packet() {
 			//	command: 	''
 			// 	data:		6x: 19 character name + 1 character bool
 			while (RX_BUFFER.command_data[index] && index < 120){
+				count++;
 				// copy the names
 				memcpy(&RACERS[index/20].name, RX_BUFFER.command_data + index, 19);
 				memcpy(&RACERS[index/20].is_you, RX_BUFFER.command_data + index + 19, 1);
 				index += 20;
 			}
 
+			print_race_end_all(RACERS, count);
 			// print the names and positions
 
 			break;
