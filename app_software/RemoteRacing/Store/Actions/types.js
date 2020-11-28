@@ -16,3 +16,5 @@ export const GPS_DATA_SET = 'GPS_DATA_SET';
 export const UTC_TIME_SET = 'UTC_TIME_SET';
 export const GPS_LOCK_SET = 'GPS_LOCK_SET';
 export const SET_PROCESS_DATA = 'SET_PROCESS_DATA';
+export const GET_LOBBY_LIST = 'SET_PROCESS_DATA';
+export const SET_LOBBY_LIST = 'SET_PROCESS_DATA';

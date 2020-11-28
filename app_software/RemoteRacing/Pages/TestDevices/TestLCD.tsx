@@ -7,7 +7,7 @@ import {
 } from 'react-native';
 import Ionicons from 'react-native-vector-icons/Ionicons';
 import {connect} from 'react-redux';
-import {sendCommand} from '../../Store/Actions/racing';
+import {sendCommand, setProcessData} from '../../Store/Actions/racing';
 
 type AppState = {};
 type NavigationType = any;
@@ -15,6 +15,10 @@ type NavigationType = any;
 class TestLCD extends React.Component<NavigationType, AppState> {
   constructor(props: any) {
     super(props);
+	}
+
+	componentDidMount() {
+		this.props.setProcessData(true);
 	}
 	
 	sendCommand(command) {
@@ -128,7 +132,12 @@ class TestLCD extends React.Component<NavigationType, AppState> {
 					{body}
 				</View>
     )
-  }
+	}
+	
+	componentWillUnmount() {
+		this.props.setProcessData(false);
+	}
+
 }
 
 const styles = StyleSheet.create({
@@ -170,7 +179,8 @@ const mapStateToProps = (state) => {
 
 const mapDispatchToProps = (dispatch) => {
 	return {
-		sendCommand: (command) => dispatch(sendCommand())
+		sendCommand: (command) => dispatch(sendCommand(command)),
+		setProcessData: (val) => dispatch(setProcessData(val))
 	}
 }
 

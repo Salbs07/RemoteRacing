@@ -3,7 +3,6 @@ import {
   StyleSheet,
 	View,
 	Text,
-	ScrollView
 } from 'react-native';
 import {connect} from 'react-redux';
 import {connectBLE, setProcessData} from '../../Store/Actions/racing';
@@ -26,9 +25,7 @@ class TestGPS extends React.Component<NavigationType, AppState> {
 							<Text style={styles.dataTextTitle}>GPS:</Text>
 						</View>
 						<View style={styles.data}>
-							<ScrollView> 
 								<Text style={styles.dataText}>{this.props.racingState.gps_string}</Text>
-							</ScrollView> 
 						</View>
 					</View>
 				</View>

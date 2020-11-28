@@ -15,10 +15,11 @@ import {
 	UTC_TIME_SET,
 	GPS_LOCK_SET,
 	SET_PROCESS_DATA,
+	GET_LOBBY_LIST,
+	SET_LOBBY_LIST,
 } from "./types";
 
 import { Buffer } from 'buffer';
-import { ActionSheetIOS } from "react-native";
 
 export const initBLE = () => (
 	{
@@ -132,9 +133,22 @@ export const setProcessData = (name) => (
 	}
 );
 
+export const setLobbyList = (name) => (
+	{
+		type: SET_LOBBY_LIST,
+		data: name
+	}
+);
+
 
 
 //async functions
+export const getLobbyList = () => {
+	return function(dispatch, getState) {
+		
+	}
+};
+
 export const discoverBLE = () => {
 	return function(dispatch, getState) {
 		if(getState().racingReducer.manager != "") {
@@ -221,8 +235,8 @@ export const connectBLE = (deviceName) => {
 										dispatch(setGPSString(gps_data.forPrint));
 										dispatch(gpsDataSet(gps_data.forArray));
 										dispatch(gpsLockSet(gps_data.lock));
-										dispatch(utcTimeSet(gps_data.utc));
 									}
+									dispatch(utcTimeSet(gps_data.utc));
 							}
 							})
 						})
@@ -237,6 +251,112 @@ export const connectBLE = (deviceName) => {
 		});
 	}
 };
+
+export const sendCommand = (command) => {
+	return function(dispatch, getState) {
+		let commandToSend;
+		switch (command.type) {
+			/*
+				commandPacket = {
+					type: command,
+				};
+			*/
+			case "GPS_RIP_2020NOV":
+				commandToSend = "@";
+				break;
+			/*
+				commandPacket = {
+					type: command,
+				};
+			*/
+			case "IDLE":
+				commandToSend = "A";
+				break;
+			/*
+				commandPacket = {
+					type: command,
+				};
+			*/
+			case "RACE_START":
+				commandToSend = "B";
+				console.log(getState().racingReducer.utc_time);
+				current_seconds = parseInt(getState().racingReducer.utc_time.substring(4, 6));
+				current_minutes = parseInt(getState().racingReducer.utc_time.substring(2, 4));
+				current_hours = parseInt(getState().racingReducer.utc_time.substring(0, 2));
+				current_seconds += 30;
+
+				current_minutes = (current_seconds > 59) ? current_minutes + 1: current_minutes;
+				current_seconds = (current_seconds > 59) ? current_seconds - 60 : current_seconds;
+
+				current_hours =  (current_minutes > 59) ? current_hours + 1 : current_hours;
+				current_minutes = (current_minutes > 59) ? current_minutes - 60 : current_minutes;
+
+				current_hours = (current_hours > 23) ? 0 : current_hours;
+
+				const filler = "0";
+
+				let new_sec = current_seconds > 9 ? current_seconds.toString() : filler.concat(current_seconds.toString());
+				let new_min = current_minutes> 9 ? current_minutes.toString() : filler.concat(current_minutes.toString());
+				let new_hour = current_hours > 9 ? current_hours.toString() : filler.concat(current_hours.toString());
+
+				start_time = new_hour.concat(new_min.concat(new_sec.concat(getState().racingReducer.utc_time.substring(6, 10))));
+				console.log(start_time);
+				commandToSend += start_time;
+				break;
+			/*
+				commandPacket = {
+					type: command,
+					data: {
+						position: "3rd",
+						distanceStringLength: 7,
+						distanceString: "3.3 / 4"
+					}
+				};
+			*/
+			case "POS_UPDATE":
+				commandToSend = "C";
+				let code = String.fromCharCode(command.data.distanceStringLength);
+				commandToSend += command.data.position.concat(code.concat(command.data.distanceString));
+				break;
+			/*
+				commandPacket = {
+					type: command,
+					data: "3"
+				};
+			*/
+			case "RACE_END":
+				commandToSend = "D";
+				commandToSend += String.fromCharCode(command.data);
+				break;
+			/*
+				commandPacket = {
+					type: command,
+					meIndex: 3,
+					data: ["Anita", "Devin", "Grant", "Preston"]
+				};
+			*/
+			case "RACE_END_ALL":
+				commandToSend = "E";
+				for (let i = 0; i < command.data.length; i++) {
+					commandToSend = commandToSend.concat(command.data[i])
+					for (let j = command.data[i].length; j < 19; j++) {
+						commandToSend = commandToSend.concat('\0');
+					}
+					if (i == command.meIndex) {
+						commandToSend = commandToSend.concat('\u0001');
+					} else {
+						commandToSend = commandToSend.concat('\0');
+					}
+				}
+				break;
+		}
+		for (let i = commandToSend.length; i < 121; i++) {
+			commandToSend = commandToSend.concat('\0');
+		}
+		const valueBase64 = new Buffer(commandToSend).toString('base64');
+		getState().racingReducer.device.writeCharacteristicWithoutResponseForService(getState().racingReducer.uart_serviceUUID, getState().racingReducer.uart_rxUUID, valueBase64);
+	}
+}
 
 function process_gps_string(gps_data_string) {
 	if(gps_data_string[2] == "N") {
@@ -275,7 +395,7 @@ function process_gps_string(gps_data_string) {
 		let utc_time = gps_data_string.substring(7, 17);
 		let for_print = "Time: " + utc_time.concat(" UTC\n NO GPS LOCK");
 		return {
-			forPrint: "GPRMC - NO LOCK\n",
+			forPrint: for_print,
 			forArray: [],
 			lock: false,
 			utc: utc_time,
@@ -289,99 +409,5 @@ function process_gps_string(gps_data_string) {
 			utc: "UTC DATA MALFORMED",
 			vaid: false,
 		}
-	}
-}
-
-export const sendCommand = (command) => {
-	return function(dispatch, getState) {
-		commandToSend;
-		switch (command.type) {
-			/*
-				commandPacket = {
-					type: command,
-				};
-			*/
-			case "GPS_RIP_2020NOV":
-				commandToSend = "@";
-				break;
-			/*
-				commandPacket = {
-					type: command,
-				};
-			*/
-			case "IDLE":
-				commandToSend = "A";
-				break;
-			/*
-				commandPacket = {
-					type: command,
-				};
-			*/
-			case "RACE_START":
-				commandToSend = "B";
-				current_seconds = parseInt(getState().utc_time.substring(4, 6));
-				current_minutes = parseInt(getState().utc_time.substring(2, 4));
-				current_hours = parseInt(getState().utc_time.substring(0, 2));
-				current_seconds += 30;
-
-				current_minutes = (current_seconds > 59) ? current_minutes + 1: current_minutes;
-				current_seconds = (current_seconds > 59) ? current_seconds - 60 : current_seconds;
-
-				current_hours =  (current_minutes > 59) ? current_hours + 1 : current_hours;
-				current_minutes = (current_minutes > 59) ? current_minutes - 60 : current_minutes;
-
-				current_hours = (current_hours > 23) ? 0 : current_hours;
-
-				start_time = current_hours.toString().concat(current_minutes.toString().concat(current_seconds.toString().concat(getState().utc_time.substring(6, 10))));
-				commandToSend += start_time;
-				break;
-			/*
-				commandPacket = {
-					type: command,
-					data: {
-						position: "3rd",
-						distanceStringLength: 7,
-						distanceString: "3.3 / 4"
-					}
-				};
-			*/
-			case "POS_UPDATE":
-				commandToSend = "C";
-				commandToSend += command.data.position.concat(command.data.distanceStringLength.toString().concat(command.data.distanceString));
-				break;
-			/*
-				commandPacket = {
-					type: command,
-					data: "3"
-				};
-			*/
-			case "RACE_END":
-				commandToSend = "D";
-				commandToSend += command.data.toString();
-				break;
-			/*
-				commandPacket = {
-					type: command,
-					meIndex: 3,
-					data: ["Anita", "Devin", "Grant", "Preston"]
-				};
-			*/
-			case "RACE_END_ALL":
-				commandToSend = "E";
-				for (let i = 0; i < command.data.length; i++) {
-					commandToSend = commandToSend.concat(command.data[i])
-					for (let j = command.data[i].length; j < 19; j++) {
-						commandToSend = commandToSend.concat('\0');
-					}
-					if (i == command.meIndex) {
-						commandToSend = commandToSend.concat('\u0001');
-					} else {
-						commandToSend = commandToSend.concat('\0');
-					}
-				}
-				break;
-		}
-		const valueBase64 = new Buffer(commandToSend).toString('base64');
-		getState().device.writeCharacteristicWithoutResponseForService(getState().racingReducer.uart_serviceUUID, getState().racingReducer.uart_txUUID, valueBase64);
 	}
 }

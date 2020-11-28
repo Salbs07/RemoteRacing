@@ -17,6 +17,7 @@ import {
 	UTC_TIME_SET,
 	GPS_LOCK_SET,
 	SET_PROCESS_DATA,
+	SET_LOBBY_LIST,
 } from '../Actions/types';
 
 import {BleManager} from 'react-native-ble-plx';
@@ -25,9 +26,9 @@ const initialState = {
 	username: "Change Me!",
 	usernameAvailable: false,
 	devices: [],
-	device: "",
 	subscription: "",
 	manager: "",
+	device: "",
 	uart_serviceUUID: "",
 	uart_rxUUID: "",
 	uart_txUUID: "",
@@ -42,6 +43,7 @@ const initialState = {
 	gps_lock: false,
 	utc_time: "",
 	process_data: false,
+	lobby_list: [],
 }
 
 const racingReducer = (state = initialState, action) => {
@@ -138,6 +140,11 @@ const racingReducer = (state = initialState, action) => {
 			return {
 				...state,
 				process_data: action.data
+			}
+		case SET_LOBBY_LIST:
+			return {
+				...state,
+				lobby_list: action.data
 			}
 		default:
 			return state;
