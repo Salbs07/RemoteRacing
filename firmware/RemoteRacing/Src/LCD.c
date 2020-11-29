@@ -26,7 +26,7 @@
 	  LCD_draw_text(t, strlen(t), 0, 0, 4, ILI9341_BLACK);
 	  lastcase = 0;
   }
-  void print_race_start_start() {
+  void race() {
 	  char t[] = "\n\n\n   RACE!";
 	  LCD_draw_text(t, strlen(t), 0, 0, 4, ILI9341_BLACK);
   }
@@ -64,6 +64,8 @@
 	  strcpy(update_time, time);
 
   }
+
+  // void print_race_end_all(racer_t* racers, uint8_t num_racers) { }
 
 /**************************************************************************/
 /*
