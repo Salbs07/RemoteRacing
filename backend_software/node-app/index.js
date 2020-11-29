@@ -234,6 +234,15 @@ io.on("connection", socket => {
 			lobby[0].updateRacer(payload);
 		}
 	});
+
+	socket.on("new message", payload => {
+		let lobby = lobbies.filter(lobby => lobby.name == payload.lobbyName);
+		if (lobby.length == 1) {
+			lobby[0].chat_names.push(payload.racerName);
+			lobby[0].chat_messages.push(payload.message);
+			io.emit("active lobby update", {lobby: lobby[0]});
+		}
+	});
 });
 
 httpServer.listen(port, () => console.log("server running on port:" + port));
