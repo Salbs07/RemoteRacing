@@ -27,6 +27,7 @@ import {
 } from "./types";
 
 import { Buffer } from 'buffer';
+import { PermissionsAndroid, Platform } from 'react-native';
 
 export const initBLE = () => (
 	{
@@ -196,7 +197,7 @@ export const setFirstTime = (value) => (
 	}
 );
 
-
+sent_finished = false;
 //async functions
 export const recieve_messages = () => {
 	return function(dispatch, getState) {
@@ -232,7 +233,25 @@ export const recieve_messages = () => {
 				if (getState().racingReducer.lobby_status != lobby.status && lobby.status == "Race countdown beginning...") {
 					dispatch(sendCommand({type: "RACE_START", startTime: lobby.startTimeString}));
 				} else if (lobby.status == "Race!") {
-					// send a pos update
+					if (!sent_finished) {
+						let indexFound = 0;
+						if(lobby.racers.find((racer, index) => {
+							let result = racer.name == getState().racingReducer.username;
+							if (result) {
+								indexFound = index + 1;
+							}
+							return result;
+						}).finished == true) {
+							if (indexFound != 0) {
+								dispatch(sendCommand({type: "RACE_END", data: indexFound}));
+								sent_finished = true;
+							}
+						} else {
+							if (indexFound != 0) {
+								dispatch(sendCommand({type: "POS_UPDATE", data: indexFound}));
+							}
+						}
+					}
 				} else if (getState().racingReducer.lobby_status != lobby.status && lobby.status == "Race Over!") {
 					let meIndex = getState().racingReducer.lobby_racers.indexOf(getState().racingReducer.username);
 					dispatch(sendCommand({type: "RACE_END_ALL", meIndex: meIndex, data: getState().racingReducer.lobby_racers}));
@@ -248,14 +267,24 @@ export const send_message = (type, payload) => {
 	return function(dispatch, getState) {
 		getState().racingReducer.socket.emit(type, payload);
 	}
-}
+};
+
 export const getLobbyList = () => {
 	return function(dispatch, getState) {
 		
 	}
 };
 
+async function requestPermission() {
+	try {
+		const granted = await PermissionsAndroid.request(PermissionsAndroid.PERMISSIONS.ACCESS_FINE_LOCATION);
+	} catch (err) {
+		console.error(err)
+	}
+};
+
 export const discoverBLE = () => {
+	if (Platform.OS == "android") {requestPermission()};
 	return function(dispatch, getState) {
 		if(getState().racingReducer.manager != "") {
 			getState().racingReducer.manager.startDeviceScan(null, null, (error, device) => {
@@ -276,7 +305,7 @@ export const discoverBLE = () => {
 		}
 	}
 };
-
+let counter = 0;
 export const connectBLE = (deviceName) => {
 	return function(dispatch, getState) {
 		getState().racingReducer.manager.stopDeviceScan();
@@ -291,7 +320,7 @@ export const connectBLE = (deviceName) => {
 				if (device.name == deviceName) {
 					getState().racingReducer.manager.stopDeviceScan();
 					dispatch(setDeviceStatus("Connecting..."));
-					device.connect()
+					device.connect({requestMTU: 238})
 						.then((device) => {
 							dispatch(setConnected({result: true, device: device}));
 							dispatch(setDeviceStatus("Discovering Services..."));
@@ -304,7 +333,8 @@ export const connectBLE = (deviceName) => {
 									dispatch(setDeviceStatus("Error creating Subscription"));
 									return
 								}
-								if (getState().racingReducer.process_data) {
+								counter++;
+								if (((Platform.OS == "ios") || (Platform.OS == "android" && (counter % 9 == 0))) && getState().racingReducer.process_data) {
 									const buffer = new Buffer(characteristic.value, 'base64');
 									let buf = new ArrayBuffer(4);
 									let view = new DataView(buf);
@@ -425,8 +455,9 @@ export const sendCommand = (command) => {
 			*/
 			case "POS_UPDATE":
 				commandToSend = "C";
-				let code = String.fromCharCode(command.data.distanceStringLength);
-				commandToSend += command.data.position.concat(code.concat(command.data.distanceString));
+				commandToSend += String.fromCharCode(command.data);
+				// let code = String.fromCharCode(command.data.distanceStringLength);
+				// commandToSend += command.data.position.concat(code.concat(command.data.distanceString));
 				break;
 			/*
 				commandPacket = {
@@ -447,7 +478,7 @@ export const sendCommand = (command) => {
 			*/
 			case "RACE_END_ALL":
 				commandToSend = "E";
-				for (let i = 0; i < command.data.length; i++) {
+				for (let i = 0; i < command.data.length && i < 6; i++) {
 					commandToSend = commandToSend.concat(command.data[i])
 					for (let j = command.data[i].length; j < 19; j++) {
 						commandToSend = commandToSend.concat('\0');

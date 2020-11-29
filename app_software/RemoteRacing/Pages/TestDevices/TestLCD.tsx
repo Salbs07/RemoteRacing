@@ -45,11 +45,7 @@ class TestLCD extends React.Component<NavigationType, AppState> {
 			case "POS_UPDATE":
 				commandPacket = {
 					type: command,
-					data: {
-						position: "3rd",
-						distanceStringLength: 7,
-						distanceString: "3.3 / 4"
-					}
+					data: "3"
 				};
 				this.props.sendCommand(commandPacket);
 				break;

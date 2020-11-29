@@ -85,7 +85,7 @@ const racingReducer = (state = initialState, action) => {
 			}
 			return state;
 		case CHECK_NAME:
-			if (action.data == "Taken") {
+			if (action.data == "Taken" || action.data.length > 19) {
 				return {
 					...state,
 					usernameAvailable: false
@@ -169,7 +169,7 @@ const racingReducer = (state = initialState, action) => {
 		case INIT_SOCKET:
 			return {
 				...state,
-				socket: io("http://192.168.0.8:3100"),
+				socket: io("http://45.79.182.118:3100"),
 			}
 		case SET_CREATE_LOBBY_SUCCESS: 
 			return {

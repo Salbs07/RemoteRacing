@@ -20,16 +20,19 @@ const backgroundImage = "../Assets/Images/main_background_2.jpeg";
 
 class Home extends React.Component<NavigationType, AppState> {
 	scrollView;
+	text_message = "";
   constructor(props: any) {
     super(props);
-    // let self = this;
-    // setInterval(() => {fetch('http://45.79.182.118:3100/').then((response) => {response.text().then((html) => {self.setState({textResponse: html})})})}, 3000);
 	}
 	
 	componentDidMount() {
 		this.props.initSocket();
 		this.props.recieve_messages();
 		this.props.setProcessData(true);
+	}
+
+	sendText() {
+		this.props.send_message("new message", {lobbyName: this.props.racingState.active_lobby, racerName: this.props.racingState.username, message: this.text_message});
 	}
 
 	leaveLobby() {
@@ -164,8 +167,8 @@ class Home extends React.Component<NavigationType, AppState> {
 								{chatList}
 							</ScrollView>
 							<View style={styles.messageInputContainer}>
-								<TextInput style={styles.messageInputField}></TextInput>
-								<TouchableOpacity style={styles.messageInputSendButton}>
+								<TextInput style={styles.messageInputField} onChangeText={text => this.text_message = text}></TextInput>
+								<TouchableOpacity style={styles.messageInputSendButton} onPress={() => this.sendText()}>
 									<Text style={styles.messageInputSendButtonText}>Send</Text>
 								</TouchableOpacity>
 							</View>

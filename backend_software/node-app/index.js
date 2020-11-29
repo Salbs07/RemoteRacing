@@ -211,6 +211,7 @@ io.on("connection", socket => {
 		let lobby = lobbies.filter(lobby => lobby.name == payload.lobbyName);
 		if (lobby.length == 1) {
 			lobby[0].racers = lobby[0].racers.filter(racer => racer.name != payload.racerName);
+			lobby[0].updateStatus();
 			socket.emit("leave lobby response", {result: true});
 			io.emit("active lobby update", {lobby: lobby[0]});
 		} else {
