@@ -164,15 +164,17 @@
   void print_idle();
   // prints starting text
   void print_race_start();
-  // prints "RACE!"
-  void print_race_start_start();
+  // literally just prints "RACE!"
+  void race();
   // writes the unchanging text in the update phase (i.e. "Position: ...")
   void print_pos_update_init(char* position, char* miles);
   // updates the position and traveled distance
   void print_pos_update(char* position, char* miles);
   // prints "finish!" as well as the driver's finishing time
   void print_race_end(char* time);
-  // prints all
+  // prints results of the race. The function is defined in racing_tasks.h and .c
+  // why? Access to the racer struct while maintaining current dependency structure
+  /* void print_race_end_all(racer_t* racers, uint8_t num_racers); <- DO NOT UNCOMMENT OUT THIS LINE  */
 
 /**************************************************************************/
 /*
@@ -215,7 +217,7 @@ void LCD_draw_text_helper(char* buffer, uint8_t len, uint16_t x, uint16_t y,
 		uint8_t s, uint16_t color);
 void erase_update(void);
 void erase_end(void);
-void erase_end_all(void);
+void erase_end_all(void);	// defined in racing_tasks.c
 
 /**************************************************************************/
 /*
