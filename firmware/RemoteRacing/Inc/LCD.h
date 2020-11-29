@@ -141,14 +141,13 @@
   uint8_t textsize_x;   ///< Desired magnification in X-axis of text
   uint8_t textsize_y;   ///< Desired magnification in Y-axis of text
   uint8_t rotation;     ///< Display rotation (0 thru 3)
-  unsigned char wrap;            ///< If set, 'wrap' text at right edge of display
-  unsigned char _cp437;          ///< If set, use correct CP437 charset (default is off
-  char text[50];			///< previous text written to the screen
-  //uint8_t textlength;	///< the length of the text written to the screen
-  char update_pos[3];				///< previous position written to the screen
-  char update_dist[20];		///< previous distance traveled written to the screen
-  char update_time[20];		///< previous distance traveled written to the screen
-  //racer_t race_results;
+  unsigned char wrap;       ///< If set, 'wrap' text at right edge of display
+  unsigned char _cp437;     ///< If set, use correct CP437 charset (default is off)
+  char text[40];			///< previous text written to the screen
+  char update_pos;			///< previous position written to the screen
+  //char update_pos[3];		///< previous position written to the screen
+  //char update_dist[20];	///< previous distance traveled written to the screen
+  char update_time[20];		///< finishing time written to the screen in race_end()
   uint8_t num_racer_results;
   uint8_t lastcase;
 
@@ -158,21 +157,23 @@
 */
 /**************************************************************************/
 
-  // prints the error message
+  // prints the GPS error message
   void print_gps_rip();
   // prints idle message
   void print_idle();
   // prints starting text
   void print_race_start();
   // prints "RACE!"
-  void print_race_start_start();
+  void race();
   // writes the unchanging text in the update phase (i.e. "Position: ...")
-  void print_pos_update_init(char* position, char* miles);
-  // updates the position and traveled distance
-  void print_pos_update(char* position, char* miles);
+  void print_pos_update_init(char position);
+  // updates the position within the race
+  void print_pos_update(char position);
   // prints "finish!" as well as the driver's finishing time
   void print_race_end(char* time);
-  // prints all
+  // prints results of the race. The function is defined in racing_tasks.h and .c
+  // why? Access to the racer struct while maintaining current dependency structure
+  /* void print_race_end_all(racer_t* racers, uint8_t num_racers); <- DO NOT UNCOMMENT OUT THIS LINE  */
 
 /**************************************************************************/
 /*
@@ -215,7 +216,7 @@ void LCD_draw_text_helper(char* buffer, uint8_t len, uint16_t x, uint16_t y,
 		uint8_t s, uint16_t color);
 void erase_update(void);
 void erase_end(void);
-void erase_end_all(void);
+void erase_end_all(void);	// defined in racing_tasks.c
 
 /**************************************************************************/
 /*

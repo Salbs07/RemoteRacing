@@ -26,32 +26,37 @@
 	  LCD_draw_text(t, strlen(t), 0, 0, 4, ILI9341_BLACK);
 	  lastcase = 0;
   }
-  void print_race_start_start() {
+  void race() {
 	  char t[] = "\n\n\n   RACE!";
 	  LCD_draw_text(t, strlen(t), 0, 0, 4, ILI9341_BLACK);
   }
-  // receives new position in race and updated traveled distance
-  void print_pos_update_init(char* position, char* miles) {
+  void print_pos_update_init(char position) {
 	  lastcase = 1;
-	  strcpy(update_pos, position);
-	  strcpy(update_dist, miles);
-	  LCD_draw_text("\n\n  Position:", strlen("\n\n  Position:"), 0, 0, 4, ILI9341_BLACK);
-	  LCD_draw_text_helper("\n     ", strlen("\n     "), cursor_x, cursor_y, 4, ILI9341_BLACK);
-	  LCD_draw_text_helper(position, strlen(position), cursor_x, cursor_y, 4, ILI9341_BLACK);
+	  update_pos = position;
+	  //strcpy(update_pos, position);
+	  //strcpy(update_dist, miles);
+	  LCD_draw_text("\n\n\n  Position:", strlen("\n\n\n  Position:"), 0, 0, 4, ILI9341_BLACK);
+	  LCD_draw_text_helper("\n      ", strlen("\n      "), cursor_x, cursor_y, 4, ILI9341_BLACK);
+	  LCD_draw_text_helper(&position, 1, cursor_x, cursor_y, 4, ILI9341_BLACK);
+	  //LCD_draw_text_helper(position, strlen(position), cursor_x, cursor_y, 4, ILI9341_BLACK);
+	  /*
 	  LCD_draw_text_helper("\n\n ", strlen("\n\n  "), cursor_x, cursor_y, 4, ILI9341_BLACK);
 	  LCD_draw_text_helper(miles, strlen(miles), cursor_x, cursor_y, 3, ILI9341_BLACK);
 	  LCD_draw_text_helper(" miles", strlen(" miles"), cursor_x, cursor_y, 3, ILI9341_BLACK);
+	  */
   }
-  void print_pos_update(char* position, char* miles) {
+  void print_pos_update(char position) {
 	  lastcase = 1;
-	  LCD_draw_text_helper(update_pos, strlen(update_pos), 120, 96, 4, ILI9341_WHITE);
-	  LCD_draw_text_helper(update_dist, strlen(update_dist), 48, 160, 3, ILI9341_WHITE);
-	  strcpy(update_pos, position);
-	  strcpy(update_dist, miles);
-	  LCD_draw_text_helper(position, strlen(position), 120, 96, 4, ILI9341_BLACK);
-	  LCD_draw_text_helper(miles, strlen(miles), 48, 160, 3, ILI9341_BLACK);
+	  LCD_draw_text_helper(&update_pos, 1, 144, 128, 4, ILI9341_WHITE);
+	  //LCD_draw_text_helper(update_pos, strlen(update_pos), 120, 128, 4, ILI9341_WHITE);
+	  //LCD_draw_text_helper(update_dist, strlen(update_dist), 48, 160, 3, ILI9341_WHITE);
+	  update_pos = position;
+	  //strcpy(update_pos, position);
+	  //strcpy(update_dist, miles);
+	  LCD_draw_text_helper(&position, 1, 144, 128, 4, ILI9341_BLACK);
+	  //LCD_draw_text_helper(position, strlen(position), 120, 128, 4, ILI9341_BLACK);
+	  //LCD_draw_text_helper(miles, strlen(miles), 48, 160, 3, ILI9341_BLACK);
   }
-  // prints "finish!" as well as the driver's finishing time
   void print_race_end(char* time) {
 	  char finish[] = "\n\n\n   FINISH!";
 	  char time_result[] = "\n\n\n Finishing time:\n  ";
@@ -64,6 +69,8 @@
 	  strcpy(update_time, time);
 
   }
+
+  // void print_race_end_all(racer_t* racers, uint8_t num_racers) { }
 
 /**************************************************************************/
 /*
@@ -594,14 +601,15 @@ void LCD_draw_text_helper(char* buffer, uint8_t len, uint16_t x, uint16_t y,
 
 
 void erase_update(void) {
-	  LCD_draw_text_helper("\n\n  Position:", strlen("\n\n  Position:"), 0, 0, 4, ILI9341_WHITE);
-	  LCD_draw_text_helper(update_pos, strlen(update_pos), 120, 96, 4, ILI9341_WHITE);
-	  LCD_draw_text_helper(update_dist, strlen(update_dist), 48, 160, 3, ILI9341_WHITE);
-	  LCD_draw_text_helper(" miles", strlen(" miles"), 156, 160, 3, ILI9341_WHITE);
+	  LCD_draw_text_helper("\n\n\n  Position:", strlen("\n\n\n  Position:"), 0, 0, 4, ILI9341_WHITE);
+	  LCD_draw_text_helper(&update_pos, 1, 144, 128, 4, ILI9341_WHITE);
+	  //LCD_draw_text_helper(update_pos, strlen(update_pos), 120, 128, 4, ILI9341_WHITE);
+	  //LCD_draw_text_helper(update_dist, strlen(update_dist), 48, 160, 3, ILI9341_WHITE);
+	  //LCD_draw_text_helper(" miles", strlen(" miles"), 156, 160, 3, ILI9341_WHITE);
 }
 void erase_end(void) {
 	  char time_result[] = "\n\n\n Finishing time:\n  ";
-	  LCD_draw_text(time_result, strlen(time_result), 0, 0, 3, ILI9341_WHITE);
+	  LCD_draw_text_helper(time_result, strlen(time_result), 0, 0, 3, ILI9341_WHITE);
 	  LCD_draw_text_helper(update_time, strlen(update_time), cursor_x, cursor_y, 4, ILI9341_WHITE);
 }
 // This library is heavily based on the Adafruit_ILI9341 and GFX library
