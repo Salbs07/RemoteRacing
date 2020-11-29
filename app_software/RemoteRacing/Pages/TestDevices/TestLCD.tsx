@@ -135,7 +135,9 @@ class TestLCD extends React.Component<NavigationType, AppState> {
 	}
 	
 	componentWillUnmount() {
-		this.props.setProcessData(false);
+		if (!this.props.racingState.in_lobby) {
+			this.props.setProcessData(false);
+		}
 	}
 
 }

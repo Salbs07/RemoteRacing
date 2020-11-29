@@ -4,7 +4,8 @@ import {
 	View,
 	TextInput,
 	Text,
-	TouchableOpacity
+	TouchableOpacity,
+	Alert,
 } from 'react-native';
 import {connect} from 'react-redux';
 import {setName, checkName} from '../../Store/Actions/racing';
@@ -21,6 +22,23 @@ class PlayerName extends React.Component<NavigationType, AppState> {
 	nameChange(text) {
 		this.setState({localName: text});
 		this.props.checkName(text);
+	}
+
+	try_to_set_name(text) {
+		if (!this.props.racingState.in_lobby) {
+			this.props.setName(text);
+		} else {
+			Alert.alert(
+				"Cannot Change Username",
+				"Username can't be changed while you are in an active lobby [" + this.props.racingState.active_lobby + "].  Please leave the lobby first.",
+				[
+					{
+						text: "OK",
+						style: "cancel"
+					}
+				]
+			)
+		}
 	}
 
   render() {
@@ -41,7 +59,7 @@ class PlayerName extends React.Component<NavigationType, AppState> {
 				<TextInput style={styles.settingsListTextInput} onChangeText={(text) => this.nameChange(text)}>{this.props.racingState.username}</TextInput>
 				<View style={{flexDirection: "row"}}>
 					{warning}
-					<TouchableOpacity style={styles.setNameButton}onPress={() => this.props.setName(this.state.localName)}>
+					<TouchableOpacity style={styles.setNameButton}onPress={() => this.try_to_set_name(this.state.localName)}>
 						<Text style={{fontSize: 20, color: "#FFFFFF"}}>Set Username</Text>
 					</TouchableOpacity>
 				</View>

@@ -2,9 +2,7 @@ import {
 	INIT_BLE,
 	SET_NAME,
 	CHECK_NAME,
-	DISCOVER_BLE,
 	ADD_DEVICE,
-	CONNECT_BLE,
 	CLEAR_IMU_STRING,
 	SET_IMU_STRING,
 	SET_GPS_STRING,
@@ -18,13 +16,20 @@ import {
 	GPS_LOCK_SET,
 	SET_PROCESS_DATA,
 	SET_LOBBY_LIST,
+	INIT_SOCKET,
+	SET_CREATE_LOBBY_SUCCESS,
+	SET_LOBBY,
+	LEAVE_LOBBY,
+	SET_READY_UP,
+	UPDATE_ACTIVE_LOBBY,
+	SET_FIRST_TIME,
 } from '../Actions/types';
 
 import {BleManager} from 'react-native-ble-plx';
+import io from "socket.io-client";
 
 const initialState = {
-	username: "Change Me!",
-	usernameAvailable: false,
+	// device side data
 	devices: [],
 	subscription: "",
 	manager: "",
@@ -43,7 +48,22 @@ const initialState = {
 	gps_lock: false,
 	utc_time: "",
 	process_data: false,
+	first_time: false,
+	// server side data
+	username: "Change Me!",
+	usernameAvailable: false,
+	socket: "",
 	lobby_list: [],
+	in_lobby: false,
+	active_lobby: "",
+	create_lobby_success: false,
+	lobby_racers: [],
+	racers_ready: [],
+	racers_distances: [],
+	ready_up: false,
+	chat_messages: [],
+	chat_names: [],
+	lobby_status: "",
 }
 
 const racingReducer = (state = initialState, action) => {
@@ -65,7 +85,7 @@ const racingReducer = (state = initialState, action) => {
 			}
 			return state;
 		case CHECK_NAME:
-			if (action.data != "Preston" && action.data != "Joe") {
+			if (action.data == "Taken") {
 				return {
 					...state,
 					usernameAvailable: false
@@ -145,6 +165,56 @@ const racingReducer = (state = initialState, action) => {
 			return {
 				...state,
 				lobby_list: action.data
+			}
+		case INIT_SOCKET:
+			return {
+				...state,
+				socket: io("http://192.168.0.8:3100"),
+			}
+		case SET_CREATE_LOBBY_SUCCESS: 
+			return {
+				...state,
+				create_lobby_success: action.data
+			};
+		case SET_LOBBY:
+			if (action.data.result) {
+				return {
+					...state,
+					active_lobby: action.data.lobbyName,
+					in_lobby : action.data.result,
+				};
+			} else {
+				return {
+					...state,
+					in_lobby : action.data.result,
+				};
+			}
+		case LEAVE_LOBBY:
+			return {
+				...state,
+				active_lobby: "",
+				in_lobby : false,
+				create_lobby_success: false,
+			};
+		case SET_READY_UP:
+			return {
+				...state,
+				ready_up: action.data
+			};
+		case UPDATE_ACTIVE_LOBBY :
+			return {
+				...state,
+				lobby_racers: action.data.racers.map((racer) => racer.name),
+				racers_ready: action.data.racers.map((racer) => racer.ready),
+				racers_distances: action.data.racers.map((racer) => racer.distance_so_far.toString().substring(0, 5)),
+				chat_messages: action.data.chat_messages,
+				chat_names: action.data.chat_names,
+				lobby_status: action.data.status,
+			}
+		case SET_FIRST_TIME: 
+			return {
+				...state,
+				first_time: action.data,
 			}
 		default:
 			return state;

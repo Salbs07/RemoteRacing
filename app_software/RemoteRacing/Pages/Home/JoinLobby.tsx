@@ -3,10 +3,11 @@ import {
   StyleSheet,
   View,
 	TouchableOpacity,
-	Text
+	Text,
+	Alert
 } from 'react-native';
 import {connect} from 'react-redux';
-import {connectBLE} from '../../Store/Actions/racing';
+import {send_message} from '../../Store/Actions/racing';
 import Ionicons from 'react-native-vector-icons/Ionicons';
 
 type AppState = {};
@@ -18,35 +19,45 @@ class JoinLobby extends React.Component<NavigationType, AppState> {
 	}
 	
 	componentDidMount() {
+		this.props.send_message("get lobbies", "");
+	}
+
+	joinLobby(name) {
+		let racer = {
+			lobbyName: name,
+			racerName: this.props.racingState.username,
+		}
+		this.props.send_message("join lobby", racer);
+		setTimeout(() => {
+			if (this.props.racingState.in_lobby) {
+				this.props.navigation.navigate('Race');
+			} else {
+				Alert.alert(
+					"Cannot Join Lobby",
+					"Failed to Join Lobby: [" + name + "] with username: [" + this.props.racingState.username + "].",
+					[
+						{
+							text: "OK",
+							style: "cancel"
+						}
+					]
+				);
+			}
+		}, 500)
 	}
 
   render() {
+		const lobbies = this.props.racingState.lobby_list.map(name => (
+			<TouchableOpacity key={name} style={styles.settingsListItem} onPress={() => this.joinLobby(name)}>
+				<Ionicons name="people-outline" size={25} color={"#FF6347"}/>	
+				<Text style={styles.settingsListText}>{name}</Text>
+				<View style={{flex: 1}}></View>
+				<Ionicons style={{paddingRight: 5}}name="chevron-forward" size={25} color={"#FF6347"}/>	
+			</TouchableOpacity>
+		))
     return (
 			<View style={styles.test}>
-			<TouchableOpacity style={styles.settingsListItem}>
-				<Ionicons name="people-outline" size={25} color={"#FF6347"}/>	
-				<Text style={styles.settingsListText}>Lobby 1</Text>
-				<View style={{flex: 1}}></View>
-				<Ionicons style={{paddingRight: 5}}name="chevron-forward" size={25} color={"#FF6347"}/>	
-			</TouchableOpacity>
-			<TouchableOpacity style={styles.settingsListItem}>
-				<Ionicons name="people-outline" size={25} color={"#FF6347"}/>	
-				<Text style={styles.settingsListText}>Lobby 2</Text>
-				<View style={{flex: 1}}></View>
-				<Ionicons style={{paddingRight: 5}}name="chevron-forward" size={25} color={"#FF6347"}/>	
-			</TouchableOpacity>
-			<TouchableOpacity style={styles.settingsListItem}>
-				<Ionicons name="people-outline" size={25} color={"#FF6347"}/>
-				<Text style={styles.settingsListText}>Lobby 3</Text>
-				<View style={{flex: 1}}></View>
-				<Ionicons style={{paddingRight: 5}}name="chevron-forward" size={25} color={"#FF6347"}/>	
-			</TouchableOpacity>
-			<TouchableOpacity  style={styles.settingsListItem}>
-				<Ionicons name="people-outline" size={25} color={"#FF6347"}/>	
-				<Text style={styles.settingsListText}>Lobby 4</Text>
-				<View style={{flex: 1}}></View>
-				<Ionicons style={{paddingRight: 5}}name="chevron-forward" size={25} color={"#FF6347"}/>	
-			</TouchableOpacity >
+			{lobbies}
 			<View style={styles.settingsListFiller}>
 			</View>
 		</View>
@@ -96,7 +107,7 @@ const mapStateToProps = (state) => {
 
 const mapDispatchToProps = (dispatch) => {
 	return {
-		connectBLE: () => dispatch(connectBLE())
+		send_message: (type, payload) => dispatch(send_message(type, payload))
 	}
 }
 

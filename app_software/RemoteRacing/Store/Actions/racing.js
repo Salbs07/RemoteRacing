@@ -15,8 +15,15 @@ import {
 	UTC_TIME_SET,
 	GPS_LOCK_SET,
 	SET_PROCESS_DATA,
-	GET_LOBBY_LIST,
+	INIT_SOCKET,
 	SET_LOBBY_LIST,
+	SET_CREATE_LOBBY_SUCCESS,
+	SET_LOBBY,
+	LEAVE_LOBBY,
+	SET_READY_UP,
+	UPDATE_ACTIVE_LOBBY,
+	SET_LOBBY_STATUS,
+	SET_FIRST_TIME,
 } from "./types";
 
 import { Buffer } from 'buffer';
@@ -126,6 +133,13 @@ export const gpsLockSet = (name) => (
 	}
 );
 
+export const initSocket = () => (
+	{
+		type: INIT_SOCKET,
+		data: ""
+	}
+);
+
 export const setProcessData = (name) => (
 	{
 		type: SET_PROCESS_DATA,
@@ -140,9 +154,101 @@ export const setLobbyList = (name) => (
 	}
 );
 
+export const setCreateLobbySuccess = (name) => (
+	{
+		type: SET_CREATE_LOBBY_SUCCESS,
+		data: name
+	}
+);
+
+export const setLobby = (name) => (
+	{
+		type: SET_LOBBY,
+		data: name
+	}
+);
+
+export const leaveLobby = () => (
+	{
+		type: LEAVE_LOBBY,
+		data: ""
+	}
+);
+
+export const setReadyUp = (value) => (
+	{
+		type: SET_READY_UP,
+		data: value
+	}
+);
+
+export const updateActiveLobby = (lobby) => (
+	{
+		type: UPDATE_ACTIVE_LOBBY,
+		data: lobby
+	}
+);
+
+export const setFirstTime = (value) => (
+	{
+		type: SET_FIRST_TIME,
+		data: value
+	}
+);
 
 
 //async functions
+export const recieve_messages = () => {
+	return function(dispatch, getState) {
+
+		getState().racingReducer.socket.on("get lobbies response", payload => {
+			dispatch(setLobbyList(payload));
+		});
+
+		getState().racingReducer.socket.on("create lobby response", payload => {
+			dispatch(setCreateLobbySuccess(payload.result));
+			if (payload.result) {
+				let racer = {
+					lobbyName: payload.lobbyName,
+					racerName: getState().racingReducer.username,
+				};
+				dispatch(send_message('join lobby', racer));
+			}
+		});
+
+		getState().racingReducer.socket.on("join lobby response", payload => {
+			dispatch(setLobby(payload));
+		});
+
+		getState().racingReducer.socket.on("leave lobby response", payload => {
+			if (payload.result) {
+				dispatch(leaveLobby());
+			}
+		});
+
+		getState().racingReducer.socket.on("active lobby update", payload => {
+			let lobby = payload.lobby;
+			if (getState().racingReducer.in_lobby && getState().racingReducer.active_lobby == lobby.name) {
+				if (getState().racingReducer.lobby_status != lobby.status && lobby.status == "Race countdown beginning...") {
+					dispatch(sendCommand({type: "RACE_START", startTime: lobby.startTimeString}));
+				} else if (lobby.status == "Race!") {
+					// send a pos update
+				} else if (getState().racingReducer.lobby_status != lobby.status && lobby.status == "Race Over!") {
+					let meIndex = getState().racingReducer.lobby_racers.indexOf(getState().racingReducer.username);
+					dispatch(sendCommand({type: "RACE_END_ALL", meIndex: meIndex, data: getState().racingReducer.lobby_racers}));
+				}
+				dispatch(updateActiveLobby(lobby));
+			}
+		});
+
+	};
+}
+
+export const send_message = (type, payload) => {
+	return function(dispatch, getState) {
+		getState().racingReducer.socket.emit(type, payload);
+	}
+}
 export const getLobbyList = () => {
 	return function(dispatch, getState) {
 		
@@ -232,12 +338,37 @@ export const connectBLE = (deviceName) => {
 									const bufStr = buffer.toString();
 									const gps_data = process_gps_string(bufStr);
 									if (gps_data.valid) {
+										if (!getState().racingReducer.first_time) {
+											if (gps_data.lock) {
+												dispatch(sendCommand({type: "IDLE"}));
+												dispatch(setFirstTime(true));
+											} else {
+												dispatch(sendCommand({type: "GPS_RIP_2020NOV"}));
+												dispatch(setFirstTime(true));
+											}
+										} else {
+											if (!getState().racingReducer.gps_lock && gps_data.lock) {
+												dispatch(sendCommand({type: "IDLE"}));
+											} else if (getState().racingReducer.gps_lock && !gps_data.lock) {
+												dispatch(sendCommand({type: "GPS_RIP_2020NOV"}));
+											}
+										}
 										dispatch(setGPSString(gps_data.forPrint));
 										dispatch(gpsDataSet(gps_data.forArray));
 										dispatch(gpsLockSet(gps_data.lock));
+										dispatch(utcTimeSet(gps_data.utc));
+										if (getState().racingReducer.in_lobby) {
+											let toSend = {
+												lobbyName: getState().racingReducer.active_lobby,
+												racerName: getState().racingReducer.username,
+												gpsData: gps_data.forArray,
+												imuData: imu_data,
+												time: gps_data.utc
+											}
+											dispatch(send_message("gps_imu_data", toSend))
+										}
 									}
-									dispatch(utcTimeSet(gps_data.utc));
-							}
+								}
 							})
 						})
 						.then(() => {
@@ -275,33 +406,12 @@ export const sendCommand = (command) => {
 			/*
 				commandPacket = {
 					type: command,
+					startTime: time,
 				};
 			*/
 			case "RACE_START":
 				commandToSend = "B";
-				console.log(getState().racingReducer.utc_time);
-				current_seconds = parseInt(getState().racingReducer.utc_time.substring(4, 6));
-				current_minutes = parseInt(getState().racingReducer.utc_time.substring(2, 4));
-				current_hours = parseInt(getState().racingReducer.utc_time.substring(0, 2));
-				current_seconds += 30;
-
-				current_minutes = (current_seconds > 59) ? current_minutes + 1: current_minutes;
-				current_seconds = (current_seconds > 59) ? current_seconds - 60 : current_seconds;
-
-				current_hours =  (current_minutes > 59) ? current_hours + 1 : current_hours;
-				current_minutes = (current_minutes > 59) ? current_minutes - 60 : current_minutes;
-
-				current_hours = (current_hours > 23) ? 0 : current_hours;
-
-				const filler = "0";
-
-				let new_sec = current_seconds > 9 ? current_seconds.toString() : filler.concat(current_seconds.toString());
-				let new_min = current_minutes> 9 ? current_minutes.toString() : filler.concat(current_minutes.toString());
-				let new_hour = current_hours > 9 ? current_hours.toString() : filler.concat(current_hours.toString());
-
-				start_time = new_hour.concat(new_min.concat(new_sec.concat(getState().racingReducer.utc_time.substring(6, 10))));
-				console.log(start_time);
-				commandToSend += start_time;
+				commandToSend += command.startTime;
 				break;
 			/*
 				commandPacket = {
@@ -360,6 +470,15 @@ export const sendCommand = (command) => {
 
 function process_gps_string(gps_data_string) {
 	if(gps_data_string[2] == "N") {
+		if ((gps_data_string[43] != "W" && gps_data_string[43] != "E") || (gps_data_string[30] != "N" && gps_data_string[30] != "S")) {
+			return {
+				forPrint: "GPS DATA MALFORMED",
+				forArray: [],
+				lock: false,
+				utc: "UTC DATA MALFORMED",
+				vaid: false,
+			}
+		}
 		// parse position and time and set lock to true
 		let utc_time = gps_data_string.substring(7, 17);
 		gps_substr_lat_1 = NaN;
