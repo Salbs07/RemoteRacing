@@ -221,17 +221,6 @@ void erase_end_all(void);	// defined in racing_tasks.c
 
 /**************************************************************************/
 /*
-    FOR DEBUGGING
-*/
-/**************************************************************************/
-uint8_t readcommand8(uint8_t reg);
-uint8_t read8Bit(void);
-void resetPins(void);
-void set8BitOutput(void);
-void set8BitInput(void);
-
-/**************************************************************************/
-/*
     NECESSARY DATA
 */
 /**************************************************************************/
