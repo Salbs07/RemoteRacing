@@ -194,12 +194,13 @@ void print_race_end_all(racer_t* racers, uint8_t num_racers) {
 	  uint8_t i;
 	  char results[] = "   RESULTS";
 	  char space[] = "\n ";
+	  if (lastcase == 1) erase_update();
+	  else if (lastcase == 2) erase_end();
+	  else if (lastcase == 3) return;
 	  lastcase = 3;
 	  num_racer_results = num_racers;
-	  erase_end();
 
-	  LCD_draw_text_helper(results, strlen(results), 0, 0, 4, ILI9341_BLACK);
-	  //LCD_draw_text_helper(space, strlen(space), cursor_x, cursor_y, 4, ILI9341_BLACK);
+	  LCD_draw_text(results, strlen(results), 0, 0, 4, ILI9341_BLACK);
 	  for (i = 0; i < num_racers; i++) {
 		  char place[] = {i + 49 , ' '};
 		  LCD_draw_text_helper(space, strlen(space), cursor_x, cursor_y, 3, ILI9341_BLACK);
