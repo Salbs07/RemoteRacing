@@ -201,6 +201,7 @@ void print_race_end_all(racer_t* racers, uint8_t num_racers) {
 	  num_racer_results = num_racers;
 
 	  LCD_draw_text(results, strlen(results), 0, 0, 4, ILI9341_BLACK);
+	  LCD_draw_text_helper(space, strlen(space), cursor_x, cursor_y, 3, ILI9341_BLACK);
 	  for (i = 0; i < num_racers; i++) {
 		  char place[] = {i + 49 , ' '};
 		  LCD_draw_text_helper(space, strlen(space), cursor_x, cursor_y, 3, ILI9341_BLACK);
@@ -222,6 +223,7 @@ void erase_end_all(void) {
 	  char space[] = "\n ";
 	  lastcase = 3;
 	  LCD_draw_text_helper(results, strlen(results), 0, 0, 4, ILI9341_WHITE);
+	  LCD_draw_text_helper(space, strlen(space), cursor_x, cursor_y, 3, ILI9341_BLACK);
 	  for (i = 0; i < num_racer_results; i++) {
 		  char place[] = {i + 49 , ' '};
 		  LCD_draw_text_helper(space, strlen(space), cursor_x, cursor_y, 3, ILI9341_WHITE);
