@@ -27,53 +27,40 @@
 	  lastcase = 0;
   }
   void race() {
-	  char t[] = "\n\n\n   RACE!";
+	  char t[] = "\n\n\n    RACE!";
 	  LCD_draw_text(t, strlen(t), 0, 0, 4, ILI9341_BLACK);
+	  lastcase = 0;
   }
   void print_pos_update_init(char position) {
 	  lastcase = 1;
 	  update_pos = position;
-	  //strcpy(update_pos, position);
-	  //strcpy(update_dist, miles);
 	  LCD_draw_text("\n\n\n  Position:", strlen("\n\n\n  Position:"), 0, 0, 4, ILI9341_BLACK);
 	  LCD_draw_text_helper("\n      ", strlen("\n      "), cursor_x, cursor_y, 4, ILI9341_BLACK);
 	  LCD_draw_text_helper(&position, 1, cursor_x, cursor_y, 4, ILI9341_BLACK);
-	  //LCD_draw_text_helper(position, strlen(position), cursor_x, cursor_y, 4, ILI9341_BLACK);
-	  /*
-	  LCD_draw_text_helper("\n\n ", strlen("\n\n  "), cursor_x, cursor_y, 4, ILI9341_BLACK);
-	  LCD_draw_text_helper(miles, strlen(miles), cursor_x, cursor_y, 3, ILI9341_BLACK);
-	  LCD_draw_text_helper(" miles", strlen(" miles"), cursor_x, cursor_y, 3, ILI9341_BLACK);
-	  */
   }
   void print_pos_update(char position) {
-	  if (first_pos_update) {
+	  if (first_pos_update || (lastcase == 0)) {
 		  print_pos_update_init(position);
 		  first_pos_update = 0;
 		  return;
 	  }
 	  lastcase = 1;
-	  LCD_draw_text_helper(&update_pos, 1, 144, 128, 4, ILI9341_WHITE);
-	  //LCD_draw_text_helper(update_pos, strlen(update_pos), 120, 128, 4, ILI9341_WHITE);
-	  //LCD_draw_text_helper(update_dist, strlen(update_dist), 48, 160, 3, ILI9341_WHITE);
+	  LCD_draw_text(&update_pos, 1, 144, 128, 4, ILI9341_WHITE);
 	  update_pos = position;
-	  //strcpy(update_pos, position);
-	  //strcpy(update_dist, miles);
 	  LCD_draw_text_helper(&position, 1, 144, 128, 4, ILI9341_BLACK);
-	  //LCD_draw_text_helper(position, strlen(position), 120, 128, 4, ILI9341_BLACK);
-	  //LCD_draw_text_helper(miles, strlen(miles), 48, 160, 3, ILI9341_BLACK);
   }
-  void print_race_end(char* time) {
+  void print_race_end(char* pos) {
 	  char finish[] = "\n\n\n   FINISH!";
-	  char time_result[] = "\n\n\n Finishing time:\n  ";
+	  char time_result[] = "\n\n\n Finishing place\n  ";
+	  if (lastcase == 1) erase_update();
+	  else if (lastcase == 2) erase_end();
 	  lastcase = 2;
-	  erase_update();
 
 	  LCD_draw_text(finish, strlen(finish), 0, 0, 4, ILI9341_RED);
 	  LCD_draw_text(time_result, strlen(time_result), 0, 0, 3, ILI9341_BLACK);
-	  LCD_draw_text_helper(time, strlen(time), cursor_x, cursor_y, 4, ILI9341_BLACK);
-	  strcpy(update_time, time);
+	  LCD_draw_text_helper(pos, strlen(pos), cursor_x, cursor_y, 4, ILI9341_BLACK);
+	  strcpy(finish_pos, pos);
 	  first_pos_update = 1;
-
   }
 
   // void print_race_end_all(racer_t* racers, uint8_t num_racers) { }
@@ -92,7 +79,6 @@
 */
 /**************************************************************************/
 void LCD_Init(void) {
-	  first_pos_update = 1;
 	  uint8_t cmd, x, numArgs;
 	  const uint8_t *addr = initcmd;
 
@@ -587,7 +573,7 @@ size_t write(uint8_t c) {
 }
 
 /*
-    @brief  Erases some text on screen
+    @brief  Erases some text on screen - it's pretty useless
 */
 void erase(void) {
 	fillRect(20, 50, 290, cursor_y, ILI9341_WHITE);
@@ -610,14 +596,11 @@ void LCD_draw_text_helper(char* buffer, uint8_t len, uint16_t x, uint16_t y,
 void erase_update(void) {
 	  LCD_draw_text_helper("\n\n\n  Position:", strlen("\n\n\n  Position:"), 0, 0, 4, ILI9341_WHITE);
 	  LCD_draw_text_helper(&update_pos, 1, 144, 128, 4, ILI9341_WHITE);
-	  //LCD_draw_text_helper(update_pos, strlen(update_pos), 120, 128, 4, ILI9341_WHITE);
-	  //LCD_draw_text_helper(update_dist, strlen(update_dist), 48, 160, 3, ILI9341_WHITE);
-	  //LCD_draw_text_helper(" miles", strlen(" miles"), 156, 160, 3, ILI9341_WHITE);
 }
 void erase_end(void) {
-	  char time_result[] = "\n\n\n Finishing time:\n  ";
+	  char time_result[] = "\n\n\n Finishing place\n  ";
 	  LCD_draw_text_helper(time_result, strlen(time_result), 0, 0, 3, ILI9341_WHITE);
-	  LCD_draw_text_helper(update_time, strlen(update_time), cursor_x, cursor_y, 4, ILI9341_WHITE);
+	  LCD_draw_text_helper(finish_pos, strlen(finish_pos), cursor_x, cursor_y, 4, ILI9341_WHITE);
 }
 // This library is heavily based on the Adafruit_ILI9341 and GFX library
 // Adafruit_ILI9341: 	https://github.com/adafruit/Adafruit_ILI9341
