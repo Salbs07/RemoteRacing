@@ -127,6 +127,11 @@ class Lobby {
 				startRace = false;
 			}
 		});
+
+		if (this.racers.length == 0) {
+			startRace = false;
+		}
+
 		if (startRace) {
 			this.status = "Race countdown beginning...";
 			let startInfo = getStartTime(this.racers[0].time);
