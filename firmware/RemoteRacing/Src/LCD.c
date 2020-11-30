@@ -46,6 +46,11 @@
 	  */
   }
   void print_pos_update(char position) {
+	  if (first_pos_update) {
+		  print_pos_update_init(position);
+		  first_pos_update = 0;
+		  return;
+	  }
 	  lastcase = 1;
 	  LCD_draw_text_helper(&update_pos, 1, 144, 128, 4, ILI9341_WHITE);
 	  //LCD_draw_text_helper(update_pos, strlen(update_pos), 120, 128, 4, ILI9341_WHITE);
@@ -67,6 +72,7 @@
 	  LCD_draw_text(time_result, strlen(time_result), 0, 0, 3, ILI9341_BLACK);
 	  LCD_draw_text_helper(time, strlen(time), cursor_x, cursor_y, 4, ILI9341_BLACK);
 	  strcpy(update_time, time);
+	  first_pos_update = 1;
 
   }
 
@@ -86,6 +92,7 @@
 */
 /**************************************************************************/
 void LCD_Init(void) {
+	  first_pos_update = 1;
 	  uint8_t cmd, x, numArgs;
 	  const uint8_t *addr = initcmd;
 

@@ -49,7 +49,6 @@ void task_receive_ble_packet() {
 
 		uint8_t index = 0, position;
 		uint8_t count = 0;
-		const char race_end_msg[] = "    race finished!";
 		char race_pos_msg[] = "  th place!";
 		float current_time, time_to_wait;
 
@@ -66,10 +65,10 @@ void task_receive_ble_packet() {
 
 		case RACE_START:
 			// Packet Format:
-			//	command: 	'_'
+			//	command: 	'B'
 			// 	data:		10 bytes: HHMMSS.SSS
 
-			START_TIME = convert_time(&RX_BUFFER.command_data);
+			START_TIME = convert_time(RX_BUFFER.command_data);
 
 			// "put phone down, race starting soon"
 			//print_function();
@@ -85,34 +84,24 @@ void task_receive_ble_packet() {
 			vTaskDelay(1000);
 			setLED(GREEN, ON);
 
-			// print "Race!"
-
+			race();
 			break;
 
 		case POS_UPDATE:
 			// Packet Format:
-			//	command: 	'U'
-			// 	data:		<3 char array position, ie '1st', '2nd', '3rd'...> <length of next string (as an int)> <char array containing fraction, ie "3.3 / 4.0"> <padding characters>
-			memcpy(POSITION, RX_BUFFER.command_data, 3);
-			memcpy(&DIST_FRACTION_SIZE, RX_BUFFER.command_data + 3, 1);
-			memcpy(DIST_FRACTION, RX_BUFFER.command_data + 4, DIST_FRACTION_SIZE);
+			//	command: 	'C'
+			// 	data:		position
+			memcpy(&POSITION, RX_BUFFER.command_data, 1);
 
-			print_pos_update_init(POSITION, DIST_FRACTION);
-			// Print to LCD:
-			//	"Pos: <POSITION>"
-			//	"<DIST_FRACTION> miles"
+			print_pos_update(POSITION);
 			break;
 
 		case RACE_END:
 			// Packet Format:
-			//	command: 	'_'
+			//	command: 	'D'
 			// 	data:		position in first byte
 
 			// print finished on LCD
-
-			// print time finished on LCD
-			// get time from GPS data
-//			FINISH_TIME = gps_get_time();
 
 			position = RX_BUFFER.command_data[0];
 
@@ -144,7 +133,7 @@ void task_receive_ble_packet() {
 			// Positions of each racer
 
 			// Packet Format:
-			//	command: 	''
+			//	command: 	'E'
 			// 	data:		6x: 19 character name + 1 character bool
 			while (RX_BUFFER.command_data[index] && index < 120){
 				count++;

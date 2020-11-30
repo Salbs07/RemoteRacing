@@ -150,6 +150,7 @@
   char update_time[20];		///< finishing time written to the screen in race_end()
   uint8_t num_racer_results;
   uint8_t lastcase;
+  uint8_t first_pos_update;
 
 /**************************************************************************/
 /*
