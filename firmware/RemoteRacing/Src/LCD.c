@@ -53,7 +53,7 @@
 	  char finish[] = "\n\n\n   FINISH!";
 	  char time_result[] = "\n\n\n Finishing place\n  ";
 	  if (lastcase == 1) erase_update();
-	  else if (lastcase == 2) erase_end();
+	  else if (lastcase == 2) return;
 	  lastcase = 2;
 
 	  LCD_draw_text(finish, strlen(finish), 0, 0, 4, ILI9341_RED);
