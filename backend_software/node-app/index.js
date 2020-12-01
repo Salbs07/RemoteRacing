@@ -228,9 +228,11 @@ io.on("connection", socket => {
 		let lobby = lobbies.filter(lobby => lobby.name == payload.lobbyName);
 		if (lobby.length == 1) {
 			let racer = lobby[0].racers.filter(racer => racer.name == payload.racerName);
-			racer[0].ready = payload.readyup;
-			lobby[0].updateStatus();
-			io.emit("active lobby update", {lobby: lobby[0]});
+			if (racer.length > 0) {
+				racer[0].ready = payload.readyup;
+				lobby[0].updateStatus();
+				io.emit("active lobby update", {lobby: lobby[0]});
+			}
 		}
 	});
 
