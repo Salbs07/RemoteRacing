@@ -32,13 +32,13 @@ function getStartTime(current_time) {
 	let current_hours = parseInt(current_time.substring(0, 2));
 	current_seconds += 30;
 
-	// current_minutes = (current_seconds > 59) ? current_minutes + 1: current_minutes;
-	// current_seconds = (current_seconds > 59) ? current_seconds - 60 : current_seconds;
+	current_minutes_s = (current_seconds > 59) ? current_minutes + 1: current_minutes;
+	current_seconds_s = (current_seconds > 59) ? current_seconds - 60 : current_seconds;
 
-	// current_hours =  (current_minutes > 59) ? current_hours + 1 : current_hours;
-	// current_minutes = (current_minutes > 59) ? current_minutes - 60 : current_minutes;
+	current_hours_s =  (current_minutes > 59) ? current_hours + 1 : current_hours;
+	current_minutes_s = (current_minutes > 59) ? current_minutes - 60 : current_minutes;
 
-	// current_hours = (current_hours > 23) ? 0 : current_hours;
+	current_hours_s = (current_hours > 23) ? 0 : current_hours;
 
 	const filler = "0";
 
@@ -46,8 +46,13 @@ function getStartTime(current_time) {
 	let new_min = current_minutes > 9 ? current_minutes.toString() : filler.concat(current_minutes.toString());
 	let new_hour = current_hours > 9 ? current_hours.toString() : filler.concat(current_hours.toString());
 
+	let new_sec_s = current_seconds_s > 9 ? current_seconds_s.toString() : filler.concat(current_seconds_s.toString());
+	let new_min_s = current_minutes_s > 9 ? current_minutes_s.toString() : filler.concat(current_minutes_s.toString());
+	let new_hour_s = current_hours_s > 9 ? current_hours_s.toString() : filler.concat(current_hours_s.toString());
+	let start_time_s = new_hour_s.concat(new_min_s.concat(new_sec_s.concat(current_time.substring(6, 10))));
+
 	let start_time = new_hour.concat(new_min.concat(new_sec.concat(current_time.substring(6, 10))));
-	return {value: parseFloat(start_time), stringData: start_time};
+	return {value: parseFloat(start_time_s), stringData: start_time};
 
 }
 
