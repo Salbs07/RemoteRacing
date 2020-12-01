@@ -35,10 +35,10 @@ function getStartTime(current_time) {
 	let current_minutes_s = (current_seconds > 59) ? current_minutes + 1: current_minutes;
 	let current_seconds_s = (current_seconds > 59) ? current_seconds - 60 : current_seconds;
 
-	let current_hours_s =  (current_minutes > 59) ? current_hours + 1 : current_hours;
-	let current_minutes_s = (current_minutes > 59) ? current_minutes - 60 : current_minutes;
+	let current_hours_s =  (current_minutes_s > 59) ? current_hours + 1 : current_hours;
+	current_minutes_s = (current_minutes_s > 59) ? current_minutes_s - 60 : current_minutes_s;
 
-	let current_hours_s = (current_hours > 23) ? 0 : current_hours;
+	current_hours_s = (current_hours_s > 23) ? 0 : current_hours_s;
 
 	const filler = "0";
 
