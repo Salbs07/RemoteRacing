@@ -1,8 +1,9 @@
+core_cm0.h:856:34:__NVIC_SystemReset	8	static,ignoring_inline_asm
 racing_tasks.c:3:6:RTOS_INIT	8	static
 racing_tasks.c:8:6:RTOS_INIT_TASKS	16	static
 racing_tasks.c:13:6:task_send_ble_packet	48	static
 racing_tasks.c:45:6:task_receive_ble_packet	40	static
-racing_tasks.c:160:7:gps_get_time	16	static
-racing_tasks.c:172:7:convert_time	32	static
-racing_tasks.c:196:6:print_race_end_all	64	static
-racing_tasks.c:223:6:erase_end_all	56	static
+racing_tasks.c:163:7:gps_get_time	16	static
+racing_tasks.c:175:7:convert_time	32	static
+racing_tasks.c:199:6:print_race_end_all	64	static
+racing_tasks.c:226:6:erase_end_all	56	static

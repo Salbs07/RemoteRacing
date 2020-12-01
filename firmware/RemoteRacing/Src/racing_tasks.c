@@ -148,6 +148,9 @@ void task_receive_ble_packet() {
 			setLED(YELLOW, OFF);
 			setLED(GREEN, OFF);
 
+			// reset the state after a race
+			vTaskDelay(5000);
+			NVIC_SystemReset();
 			break;
 
 		default:
