@@ -166,7 +166,7 @@ class Lobby {
 				});
 				if (all_finished) {
 					this.status = "Race Over!";
-					this.racers.sort(racer_compare_times);
+					// this.racers.sort(racer_compare_times);
 					io.emit("active lobby update", {lobby: this});
 				}
 			}
