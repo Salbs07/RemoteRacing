@@ -102,11 +102,12 @@ int main(void)
   MX_USART1_UART_Init();
   MX_USART2_UART_Init();
   /* USER CODE BEGIN 2 */
+  HAL_Delay(1000);
+  LCD_Init();
+  fillScreen(ILI9341_WHITE);
   initMMA8452Q(MMA8452Q_Address, SCALE_2G, DR_800_Hz);
   ble_init(&huart1);
   gps_init(&huart2);
-  LCD_Init();
-  fillScreen(ILI9341_WHITE);
   print_idle();
   RTOS_INIT_TASKS();
   RTOS_INIT();

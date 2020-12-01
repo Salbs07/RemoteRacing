@@ -145,10 +145,9 @@
   unsigned char _cp437;     ///< If set, use correct CP437 charset (default is off)
   char text[40];			///< previous text written to the screen
   char update_pos;			///< previous position written to the screen
-  char finish_pos;
   //char update_pos[3];		///< previous position written to the screen
   //char update_dist[20];	///< previous distance traveled written to the screen
-  char update_time[20];		///< finishing time written to the screen in race_end()
+  char finish_pos[20];		///< finishing time written to the screen in race_end()
   uint8_t num_racer_results;
   uint8_t lastcase;
   uint8_t first_pos_update;
