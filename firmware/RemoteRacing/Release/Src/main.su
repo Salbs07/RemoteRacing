@@ -1,6 +1,6 @@
-main.c:140:6:SystemClock_Config	88	static
-main.c:79:5:main	64	static
-main.c:435:6:HAL_UART_RxCpltCallback	8	static
-main.c:440:6:HAL_UART_RxHalfCpltCallback	8	static
-main.c:455:6:HAL_TIM_PeriodElapsedCallback	8	static
-main.c:472:6:Error_Handler	0	static
+main.c:138:6:SystemClock_Config	88	static
+main.c:77:5:main	72	static
+main.c:402:6:HAL_UART_RxCpltCallback	8	static
+main.c:411:6:HAL_UART_RxHalfCpltCallback	8	static
+main.c:426:6:HAL_TIM_PeriodElapsedCallback	8	static
+main.c:443:6:Error_Handler	0	static

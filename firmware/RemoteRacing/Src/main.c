@@ -77,7 +77,6 @@ static void MX_USART2_UART_Init(void);
 int main(void)
 {
   /* USER CODE BEGIN 1 */
-	char greeting[] = "Hello!";
   /* USER CODE END 1 */
 
   /* MCU Configuration--------------------------------------------------------*/
@@ -107,9 +106,8 @@ int main(void)
   ble_init(&huart1);
   gps_init(&huart2);
   LCD_Init();
-  //fillScreen(ILI9341_BLACK);
-  // LCD_draw_text erases all text on screen (if any)
-  //LCD_draw_text(greeting, 7, 0, 0, 6, ILI9341_WHITE);
+  fillScreen(ILI9341_WHITE);
+  print_idle();
   RTOS_INIT_TASKS();
   RTOS_INIT();
   /* USER CODE END 2 */

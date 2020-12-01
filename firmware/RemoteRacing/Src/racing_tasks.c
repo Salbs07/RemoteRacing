@@ -44,18 +44,18 @@ void task_send_ble_packet() {
 }
 void task_receive_ble_packet() {
 	for(;;) {
-//		if( xSemaphoreTake(ble_receive_ready, portMAX_DELAY) == pdTRUE ) {
 		xSemaphoreTake(ble_receive_ready, portMAX_DELAY);
 
-		uint8_t index = 0, position;
-		uint8_t count = 0;
+		uint8_t index = 0, count = 0, position;
 		char race_pos_msg[] = "  th place!";
 		float current_time, time_to_wait;
 
 		switch((uint8_t)RX_BUFFER.command) {
+
 		case GPS_RIP_2020NOV:
 			// display messsage that the GPS has moved onto the next life
 			print_gps_rip();
+
 			break;
 
 		case IDLE:
@@ -71,10 +71,9 @@ void task_receive_ble_packet() {
 			START_TIME = convert_time(RX_BUFFER.command_data);
 
 			// "put phone down, race starting soon"
-			//print_function();
+			print_race_start();
 
 			// LED countdown
-			print_race_start();
 			current_time = gps_get_time();
 			time_to_wait = START_TIME - current_time - 2;
 			vTaskDelay((int) 1000*time_to_wait);
@@ -93,15 +92,14 @@ void task_receive_ble_packet() {
 			// 	data:		position
 			memcpy(&POSITION, RX_BUFFER.command_data, 1);
 
-			print_pos_update(POSITION);
+			// print new position
+			print_pos_update(POSITION[0]);
 			break;
 
 		case RACE_END:
 			// Packet Format:
 			//	command: 	'D'
 			// 	data:		position in first byte
-
-			// print finished on LCD
 
 			position = RX_BUFFER.command_data[0];
 
@@ -125,13 +123,12 @@ void task_receive_ble_packet() {
 			}
 			race_pos_msg[1] = position + '0';
 
-			print_race_end(race_pos_msg);
 			// print position to LCD
+			print_race_end(race_pos_msg);
 
 			break;
-		case RACE_END_ALL:
-			// Positions of each racer
 
+		case RACE_END_ALL:
 			// Packet Format:
 			//	command: 	'E'
 			// 	data:		6x: 19 character name + 1 character bool
@@ -143,10 +140,16 @@ void task_receive_ble_packet() {
 				index += 20;
 			}
 
-			print_race_end_all(RACERS, count);
 			// print the names and positions
+			print_race_end_all(RACERS, count);
+
+			// turn off LEDs
+			setLED(RED, OFF);
+			setLED(YELLOW, OFF);
+			setLED(GREEN, OFF);
 
 			break;
+
 		default:
 			break;
 		}
