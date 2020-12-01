@@ -32,13 +32,13 @@ function getStartTime(current_time) {
 	let current_hours = parseInt(current_time.substring(0, 2));
 	current_seconds += 30;
 
-	current_minutes = (current_seconds > 59) ? current_minutes + 1: current_minutes;
-	current_seconds = (current_seconds > 59) ? current_seconds - 60 : current_seconds;
+	// current_minutes = (current_seconds > 59) ? current_minutes + 1: current_minutes;
+	// current_seconds = (current_seconds > 59) ? current_seconds - 60 : current_seconds;
 
-	current_hours =  (current_minutes > 59) ? current_hours + 1 : current_hours;
-	current_minutes = (current_minutes > 59) ? current_minutes - 60 : current_minutes;
+	// current_hours =  (current_minutes > 59) ? current_hours + 1 : current_hours;
+	// current_minutes = (current_minutes > 59) ? current_minutes - 60 : current_minutes;
 
-	current_hours = (current_hours > 23) ? 0 : current_hours;
+	// current_hours = (current_hours > 23) ? 0 : current_hours;
 
 	const filler = "0";
 
