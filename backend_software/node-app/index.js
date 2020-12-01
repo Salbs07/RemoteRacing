@@ -152,7 +152,7 @@ class Lobby {
 
 	updateRacer(payload) {
 		let racer = this.racers.filter(racer => racer.name == payload.racerName);
-		if (this.status == "Race!") {
+		if (racer.length > 0 && this.status == "Race!") {
 			racer[0].updateDistance(payload.gpsData);
 			racer[0].imu_difficulty += (payload.imuData[0] + payload.imuData[1] + payload.imuData[2]);
 			racer[0].time = payload.time;
@@ -170,7 +170,7 @@ class Lobby {
 					io.emit("active lobby update", {lobby: this});
 				}
 			}
-		} else if (this.status != "Race Over!") {
+		} else if (racer.length > 0 && this.status != "Race Over!") {
 			racer[0].time = payload.time;
 			if (this.status == "Race countdown beginning..." && parseFloat(racer[0].time) >= this.startTime) {
 				this.status = "Race!";
@@ -228,9 +228,11 @@ io.on("connection", socket => {
 		let lobby = lobbies.filter(lobby => lobby.name == payload.lobbyName);
 		if (lobby.length == 1) {
 			let racer = lobby[0].racers.filter(racer => racer.name == payload.racerName);
-			racer[0].ready = payload.readyup;
-			lobby[0].updateStatus();
-			io.emit("active lobby update", {lobby: lobby[0]});
+			if (racer.length > 0) {
+				racer[0].ready = payload.readyup;
+				lobby[0].updateStatus();
+				io.emit("active lobby update", {lobby: lobby[0]});
+			}
 		}
 	});
 
