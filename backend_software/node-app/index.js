@@ -84,12 +84,26 @@ class Racer {
 }
 
 function racer_compare(racer1, racer2) {
-	if (racer1.distance_so_far > racer2.distance_so_far) {
+	if (racer1.finished && racer2.finished) {
+		if (racer1.position < racer2.position) {
+			return -1;
+		} else if (racer1.position > racer2.position) {
+			return 1;
+		} else {
+			return 0;
+		}
+	} else if (racer1.finished) {
 		return -1;
-	} else if (racer1.distance_so_far < racer2.distance_so_far) {
+	} else if (racer2.finished) {
 		return 1;
 	} else {
-		return 0;
+		if (racer1.distance_so_far > racer2.distance_so_far) {
+			return -1;
+		} else if (racer1.distance_so_far < racer2.distance_so_far) {
+			return 1;
+		} else {
+			return 0;
+		}
 	}
 }
 
