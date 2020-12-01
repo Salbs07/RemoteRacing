@@ -36,13 +36,16 @@ default.size.stdout \
 OBJDUMP_LIST += \
 RemoteRacing.list \
 
+OBJCOPY_BIN += \
+RemoteRacing.bin \
+
 
 # All Target
 all: RemoteRacing.elf secondary-outputs
 
 # Tool invocations
-RemoteRacing.elf: $(OBJS) $(USER_OBJS) C:\Users\DatBoi\RemoteRacing\firmware\RemoteRacing\STM32F030R8TX_FLASH.ld
-	arm-none-eabi-gcc -o "RemoteRacing.elf" @"objects.list" $(USER_OBJS) $(LIBS) -mcpu=cortex-m0 -T"C:\Users\DatBoi\RemoteRacing\firmware\RemoteRacing\STM32F030R8TX_FLASH.ld" --specs=nosys.specs -Wl,-Map="RemoteRacing.map" -Wl,--gc-sections -static --specs=nano.specs -mfloat-abi=soft -mthumb -Wl,--start-group -lc -lm -Wl,--end-group
+RemoteRacing.elf: $(OBJS) $(USER_OBJS) /Users/pjfossee/College/473/RemoteRacing/firmware/RemoteRacing/STM32F030R8TX_FLASH.ld
+	arm-none-eabi-gcc -o "RemoteRacing.elf" @"objects.list" $(USER_OBJS) $(LIBS) -mcpu=cortex-m0 -T"/Users/pjfossee/College/473/RemoteRacing/firmware/RemoteRacing/STM32F030R8TX_FLASH.ld" --specs=nosys.specs -Wl,-Map="RemoteRacing.map" -Wl,--gc-sections -static --specs=nano.specs -mfloat-abi=soft -mthumb -Wl,--start-group -lc -lm -Wl,--end-group
 	@echo 'Finished building target: $@'
 	@echo ' '
 
@@ -56,12 +59,17 @@ RemoteRacing.list: $(EXECUTABLES)
 	@echo 'Finished building: $@'
 	@echo ' '
 
+RemoteRacing.bin: $(EXECUTABLES)
+	arm-none-eabi-objcopy  -O binary $(EXECUTABLES) "RemoteRacing.bin"
+	@echo 'Finished building: $@'
+	@echo ' '
+
 # Other Targets
 clean:
 	-$(RM) *
 	-@echo ' '
 
-secondary-outputs: $(SIZE_OUTPUT) $(OBJDUMP_LIST)
+secondary-outputs: $(SIZE_OUTPUT) $(OBJDUMP_LIST) $(OBJCOPY_BIN)
 
 .PHONY: all clean dependents
 .SECONDARY:
