@@ -147,7 +147,7 @@ class Lobby {
 			}
 		});
 
-		if (this.racers.length == 0) {
+		if (this.racers.length == 0 || this.status != "Waiting...") {
 			startRace = false;
 		}
 
