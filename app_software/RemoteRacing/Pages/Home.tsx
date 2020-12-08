@@ -12,11 +12,10 @@ import {
 import {connect} from 'react-redux';
 import {initSocket, recieve_messages, send_message, setProcessData, setReadyUp} from '../Store/Actions/racing';
 import Ionicons from 'react-native-vector-icons/Ionicons';
+import { abs } from 'react-native-reanimated';
 
 type AppState = {title: string};
 type NavigationType = any;
-
-const backgroundImage = "../Assets/Images/main_background_2.jpeg";
 
 class Home extends React.Component<NavigationType, AppState> {
 	scrollView;
@@ -24,10 +23,26 @@ class Home extends React.Component<NavigationType, AppState> {
   constructor(props: any) {
     super(props);
 	}
-	
+
+	_focus;
+	_blur;
 	componentDidMount() {
 		this.props.initSocket();
 		this.props.recieve_messages();
+    this._focus = this.props.navigation.addListener('focus', () => {
+      this.on_focus();
+		});
+		this._blur = this.props.navigation.addListener('blur', () => {
+      this.on_blur();
+    });
+  }
+
+  componentWillUnmount() {
+		this._focus();
+		this._blur();
+  }
+
+	on_focus() {
 		this.props.setProcessData(true);
 	}
 
@@ -40,10 +55,23 @@ class Home extends React.Component<NavigationType, AppState> {
 	}
 
 	readyUp(value) {
+		let xIMU = Math.abs(this.props.racingState.imu_data[0]) < 0.2;
+		let yIMU = Math.abs(this.props.racingState.imu_data[1]) < 0.2;
 		if (value) {
-			if (this.props.racingState.gps_lock) {
+			if (this.props.racingState.gps_lock && xIMU && yIMU) {
 				this.props.setReadyUp(true);
 				this.props.send_message("update readyup", {lobbyName: this.props.racingState.active_lobby, racerName: this.props.racingState.username, readyup: true});
+			} else if (!xIMU || !yIMU) {
+				Alert.alert(
+					"Cannot Ready Up",
+					"Must stop moving before you may ready up.",
+					[
+						{
+							text: "OK",
+							style: "cancel"
+						}
+					]
+				);
 			} else {
 				Alert.alert(
 					"Cannot Ready Up",
@@ -107,7 +135,7 @@ class Home extends React.Component<NavigationType, AppState> {
 		if (this.props.racingState.in_lobby) {
 			let readyUp;
 			if (this.props.racingState.ready_up) {
-				let disable = (this.props.racingState.lobby_status != "waiting...");
+				let disable = (this.props.racingState.lobby_status != "Waiting...");
 				readyUp = (
 					<TouchableOpacity disabled={disable} style={disable ? styles.notReadyButtonDisabled : styles.notReadyButton} onPress={() => this.readyUp(false)}>
 						<Text style={styles.settingsListText}>Not Ready</Text>
@@ -223,12 +251,8 @@ class Home extends React.Component<NavigationType, AppState> {
 				{buttons}
 			</View>
 		)
-    {/* return (
-      <ImageBackground source={require(backgroundImage)} style={styles.backgroundImage}>
-      </ImageBackground>
-    ) */}
 	}
-	componentWillUnmount() {
+	on_blur() {
 		if (!this.props.racingState.in_lobby) {
 			this.props.setProcessData(false);
 		}

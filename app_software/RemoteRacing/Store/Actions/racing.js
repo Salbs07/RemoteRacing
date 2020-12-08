@@ -230,31 +230,33 @@ export const recieve_messages = () => {
 		getState().racingReducer.socket.on("active lobby update", payload => {
 			let lobby = payload.lobby;
 			if (getState().racingReducer.in_lobby && getState().racingReducer.active_lobby == lobby.name) {
-				if (getState().racingReducer.lobby_status != lobby.status && lobby.status == "Race countdown beginning...") {
-					dispatch(sendCommand({type: "RACE_START", startTime: lobby.startTimeString}));
-				} else if (lobby.status == "Race!") {
-					if (!sent_finished) {
-						let indexFound = 0;
-						if(lobby.racers.find((racer, index) => {
-							let result = racer.name == getState().racingReducer.username;
-							if (result) {
-								indexFound = index + 1;
-							}
-							return result;
-						}).finished == true) {
-							if (indexFound != 0) {
-								dispatch(sendCommand({type: "RACE_END", data: indexFound}));
-								sent_finished = true;
-							}
-						} else {
-							if (indexFound != 0) {
-								dispatch(sendCommand({type: "POS_UPDATE", data: indexFound}));
+				if (getState().racingReducer.connected) {
+					if (getState().racingReducer.lobby_status != lobby.status && lobby.status == "Race countdown beginning...") {
+						dispatch(sendCommand({type: "RACE_START", startTime: lobby.startTimeString}));
+					} else if (lobby.status == "Race!") {
+						if (!sent_finished) {
+							let indexFound = 0;
+							if(lobby.racers.find((racer, index) => {
+								let result = racer.name == getState().racingReducer.username;
+								if (result) {
+									indexFound = index + 1;
+								}
+								return result;
+							}).finished == true) {
+								if (indexFound != 0) {
+									dispatch(sendCommand({type: "RACE_END", data: indexFound}));
+									sent_finished = true;
+								}
+							} else {
+								if (indexFound != 0) {
+									dispatch(sendCommand({type: "POS_UPDATE", data: indexFound}));
+								}
 							}
 						}
+					} else if (getState().racingReducer.lobby_status != lobby.status && lobby.status == "Race Over!") {
+						let meIndex = getState().racingReducer.lobby_racers.indexOf(getState().racingReducer.username);
+						dispatch(sendCommand({type: "RACE_END_ALL", meIndex: meIndex, data: getState().racingReducer.lobby_racers}));
 					}
-				} else if (getState().racingReducer.lobby_status != lobby.status && lobby.status == "Race Over!") {
-					let meIndex = getState().racingReducer.lobby_racers.indexOf(getState().racingReducer.username);
-					dispatch(sendCommand({type: "RACE_END_ALL", meIndex: meIndex, data: getState().racingReducer.lobby_racers}));
 				}
 				dispatch(updateActiveLobby(lobby));
 			}
@@ -334,7 +336,7 @@ export const connectBLE = (deviceName) => {
 									return
 								}
 								counter++;
-								if (((Platform.OS == "ios") || (Platform.OS == "android" && (counter % 9 == 0))) && getState().racingReducer.process_data) {
+								if (((Platform.OS == "ios") || (Platform.OS == "android" && (counter % 2 == 0))) && getState().racingReducer.process_data) {
 									const buffer = new Buffer(characteristic.value, 'base64');
 									let buf = new ArrayBuffer(4);
 									let view = new DataView(buf);
@@ -455,7 +457,7 @@ export const sendCommand = (command) => {
 			*/
 			case "POS_UPDATE":
 				commandToSend = "C";
-				commandToSend += String.fromCharCode(command.data);
+				commandToSend += command.data;
 				// let code = String.fromCharCode(command.data.distanceStringLength);
 				// commandToSend += command.data.position.concat(code.concat(command.data.distanceString));
 				break;

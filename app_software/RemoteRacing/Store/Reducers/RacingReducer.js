@@ -195,6 +195,7 @@ const racingReducer = (state = initialState, action) => {
 				active_lobby: "",
 				in_lobby : false,
 				create_lobby_success: false,
+				ready_up: false,
 			};
 		case SET_READY_UP:
 			return {

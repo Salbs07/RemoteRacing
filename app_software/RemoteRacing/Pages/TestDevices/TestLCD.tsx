@@ -17,7 +17,23 @@ class TestLCD extends React.Component<NavigationType, AppState> {
     super(props);
 	}
 
+	_focus;
+	_blur;
 	componentDidMount() {
+    this._focus = this.props.navigation.addListener('focus', () => {
+      this.on_focus();
+		});
+		this._blur = this.props.navigation.addListener('blur', () => {
+      this.on_blur();
+    });
+  }
+
+  componentWillUnmount() {
+		this._focus();
+		this._blur();
+  }
+
+	on_focus() {
 		this.props.setProcessData(true);
 	}
 	
@@ -39,6 +55,7 @@ class TestLCD extends React.Component<NavigationType, AppState> {
 			case "RACE_START":
 				commandPacket = {
 					type: command,
+					startTime: getStartTime(this.props.racingState.utc_time).stringData
 				};
 				this.props.sendCommand(commandPacket);
 				break;
@@ -130,7 +147,7 @@ class TestLCD extends React.Component<NavigationType, AppState> {
     )
 	}
 	
-	componentWillUnmount() {
+	on_blur() {
 		if (!this.props.racingState.in_lobby) {
 			this.props.setProcessData(false);
 		}
@@ -168,6 +185,31 @@ const styles = StyleSheet.create({
 		flex: 11,
 	}
 })
+
+function getStartTime(current_time) {
+	let current_seconds = parseInt(current_time.substring(4, 6));
+	let current_minutes = parseInt(current_time.substring(2, 4));
+	let current_hours = parseInt(current_time.substring(0, 2));
+	current_seconds += 30;
+
+	current_minutes = (current_seconds > 59) ? current_minutes + 1: current_minutes;
+	current_seconds = (current_seconds > 59) ? current_seconds - 60 : current_seconds;
+
+	current_hours =  (current_minutes > 59) ? current_hours + 1 : current_hours;
+	current_minutes = (current_minutes > 59) ? current_minutes - 60 : current_minutes;
+
+	current_hours = (current_hours > 23) ? 0 : current_hours;
+
+	const filler = "0";
+
+	let new_sec = current_seconds > 9 ? current_seconds.toString() : filler.concat(current_seconds.toString());
+	let new_min = current_minutes > 9 ? current_minutes.toString() : filler.concat(current_minutes.toString());
+	let new_hour = current_hours > 9 ? current_hours.toString() : filler.concat(current_hours.toString());
+
+	let start_time = new_hour.concat(new_min.concat(new_sec.concat(current_time.substring(6, 10))));
+	return {value: parseFloat(start_time), stringData: start_time};
+
+}
 
 const mapStateToProps = (state) => {
 	return {

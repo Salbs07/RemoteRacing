@@ -14,9 +14,25 @@ type NavigationType = any;
 class TestIMU extends React.Component<NavigationType, AppState> {
   constructor(props: any) {
     super(props);
+	}
+
+	_focus;
+	_blur;
+	componentDidMount() {
+    this._focus = this.props.navigation.addListener('focus', () => {
+      this.on_focus();
+		});
+		this._blur = this.props.navigation.addListener('blur', () => {
+      this.on_blur();
+    });
   }
 
-	componentDidMount() {
+  componentWillUnmount() {
+		this._focus();
+		this._blur();
+  }
+
+	on_focus() {
 		this.props.setProcessData(true);
 	}
 
@@ -36,7 +52,7 @@ class TestIMU extends React.Component<NavigationType, AppState> {
 		</View>
     )
 	}
-	componentWillUnmount() {
+	on_blur() {
 		if (!this.props.racingState.in_lobby) {
 			this.props.setProcessData(false);
 		}
